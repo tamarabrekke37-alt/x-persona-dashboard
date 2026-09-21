@@ -1,0 +1,8 @@
+{
+  "name": "Remix  v4سامانه تولید محتوا ایکس",
+  "description": "سامانه تولید محتوا و مدیریت انتشار برای پلتفرم ایکس  نسخه چهار - تکمیل پروفایل ۳",
+  "requestFramePermissions": [],
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}
