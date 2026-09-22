@@ -120,10 +120,154 @@
             white-space: pre-wrap; 
             transition: all 0.3s;
         }
+
+        /* استایل‌های سامانه یکپارچه پرامپت تصویر و پرسونا */
+        .image-prompt-results-container {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin-top: 8px;
+        }
+
+        .prompt-reasoning-card {
+            background: linear-gradient(135deg, rgba(30, 27, 75, 0.8) 0%, rgba(15, 23, 42, 0.95) 100%);
+            border: 1px solid #6366f1;
+            border-radius: 8px;
+            padding: 12px 14px;
+            box-shadow: 0 4px 14px rgba(99, 102, 241, 0.15);
+        }
+
+        .prompt-reasoning-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: #4338ca;
+            color: #e0e7ff;
+            font-size: 0.8rem;
+            font-weight: bold;
+            padding: 4px 10px;
+            border-radius: 6px;
+            margin-bottom: 8px;
+        }
+
+        .prompt-reasoning-text {
+            font-size: 0.85rem;
+            line-height: 1.6;
+            color: #cbd5e1;
+            margin: 0;
+        }
+
+        .prompt-style-block {
+            background: #0b0f19;
+            border: 1px solid #334155;
+            border-radius: 8px;
+            padding: 12px;
+            transition: all 0.2s ease;
+        }
+        .prompt-style-block:hover {
+            border-color: #38bdf8;
+        }
+
+        .prompt-style-block.recommended-active {
+            border: 1.5px solid #38bdf8;
+            background: #0c1527;
+            box-shadow: 0 0 12px rgba(56, 189, 248, 0.2);
+        }
+
+        .prompt-style-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+            flex-wrap: wrap;
+            gap: 6px;
+        }
+
+        .prompt-style-title {
+            font-size: 0.85rem;
+            font-weight: bold;
+            color: #f8fafc;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .prompt-style-badge {
+            font-size: 0.7rem;
+            padding: 2px 7px;
+            border-radius: 4px;
+            font-weight: 600;
+        }
+        .badge-recommended { background: #0284c7; color: white; }
+        .badge-alt { background: #334155; color: #94a3b8; }
+
+        .prompt-text-box {
+            background: #020617;
+            border: 1px solid #1e293b;
+            border-radius: 6px;
+            padding: 10px;
+            font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+            font-size: 0.82rem;
+            line-height: 1.5;
+            color: #e2e8f0;
+            direction: ltr;
+            text-align: left;
+            white-space: pre-wrap;
+            word-break: break-word;
+            max-height: 130px;
+            overflow-y: auto;
+        }
+
+        .prompt-negative-block {
+            background: #180909;
+            border: 1px solid #7f1d1d;
+            border-radius: 8px;
+            padding: 10px 12px;
+        }
+        .prompt-negative-title {
+            font-size: 0.8rem;
+            font-weight: bold;
+            color: #f87171;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            margin-bottom: 6px;
+        }
+        .prompt-negative-text {
+            background: #0a0303;
+            border: 1px solid #450a0a;
+            border-radius: 5px;
+            padding: 8px;
+            font-family: monospace;
+            font-size: 0.78rem;
+            line-height: 1.4;
+            color: #fca5a5;
+            direction: ltr;
+            text-align: left;
+            word-break: break-word;
+        }
+
+        .btn-copy-prompt {
+            background: #0284c7;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 0.75rem;
+            font-weight: bold;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            transition: all 0.2s;
+        }
+        .btn-copy-prompt:hover {
+            background: #0369a1;
+        }
         
-        .content-box::-webkit-scrollbar, .content-box-ai::-webkit-scrollbar, .history-list::-webkit-scrollbar { width: 6px; }
-        .content-box::-webkit-scrollbar-thumb, .content-box-ai::-webkit-scrollbar-thumb, .history-list::-webkit-scrollbar-thumb { background: #3b82f6; border-radius: 4px; }
-        .content-box::-webkit-scrollbar-track, .content-box-ai::-webkit-scrollbar-track, .history-list::-webkit-scrollbar-track { background: #111827; }
+        .content-box::-webkit-scrollbar, .content-box-ai::-webkit-scrollbar, .history-list::-webkit-scrollbar, .prompt-text-box::-webkit-scrollbar { width: 6px; }
+        .content-box::-webkit-scrollbar-thumb, .content-box-ai::-webkit-scrollbar-thumb, .history-list::-webkit-scrollbar-thumb, .prompt-text-box::-webkit-scrollbar-thumb { background: #3b82f6; border-radius: 4px; }
+        .content-box::-webkit-scrollbar-track, .content-box-ai::-webkit-scrollbar-track, .history-list::-webkit-scrollbar-track, .prompt-text-box::-webkit-scrollbar-track { background: #111827; }
 
         .select-style { background: #1f2937; color: inherit; border: 1px solid #374151; padding: 4px 8px; border-radius: 4px; font-size: 0.8rem; transition: all 0.3s; }
 
@@ -269,17 +413,24 @@
             </span>
         </div>
 
-        <!-- بخش یکپارچه اکانت: نام کاربری + آپلود اسکرین‌شات + دکمه‌های تحلیل هوشمند و ذخیره -->
+        <!-- بخش یکپارچه اکانت: نام کاربری + متن بیو و توییت‌ها + آپلود اسکرین‌شات + دکمه‌های تحلیل هوشمند و ذخیره -->
         <div style="background: linear-gradient(135deg, #1e1b4b 0%, #0f172a 100%); border: 1px solid #4338ca; padding: 16px; border-radius: 10px; margin-bottom: 16px; box-shadow: 0 4px 16px rgba(67, 56, 202, 0.25);">
             
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; border-bottom: 1px solid rgba(99, 102, 241, 0.2); padding-bottom: 8px;">
+                <span style="font-weight: bold; color: #a5b4fc; font-size: 0.92rem; display: flex; align-items: center; gap: 6px;">
+                    <span>🔍</span> تحلیل‌گر خودکار پروفایل X (Twitter Profile Analyzer)
+                </span>
+                <span style="font-size: 0.75rem; color: #94a3b8;">استخراج خودکار پرسونای کامل و هویت بصری پایدار</span>
+            </div>
+
             <!-- ردیف نام کاربری و دکمه‌های اقدام -->
-            <div style="display: flex; gap: 12px; flex-wrap: wrap; align-items: flex-end; margin-bottom: 14px;">
+            <div style="display: flex; gap: 12px; flex-wrap: wrap; align-items: flex-end; margin-bottom: 12px;">
                 <div style="flex: 1; min-width: 250px;">
-                    <label for="accUsernameInput" style="font-weight: bold; color: #a5b4fc; display: block; margin-bottom: 6px; font-size: 0.88rem;">
-                        👤 نام کاربری یا لینک اکانت X (توییتر):
+                    <label for="accUsernameInput" style="font-weight: bold; color: #cbd5e1; display: block; margin-bottom: 6px; font-size: 0.85rem;">
+                        👤 ۱. نام کاربری یا لینک کامل اکانت X (توییتر):
                     </label>
                     <div style="display: flex; gap: 6px;">
-                        <input type="text" id="accUsernameInput" placeholder="@username یا لینک کامل پروفایل" oninput="saveCurrentAccData()" onchange="handleUsernameChange(this.value)" style="width: 100%; padding: 10px 14px; border-radius: 6px; border: 1px solid #6366f1; background: #0b0f19; color: white; text-align: left; direction: ltr; font-size: 0.95rem; font-weight: 500;">
+                        <input type="text" id="accUsernameInput" placeholder="@username یا https://x.com/username" oninput="saveCurrentAccData()" onchange="handleUsernameChange(this.value)" style="width: 100%; padding: 10px 14px; border-radius: 6px; border: 1px solid #6366f1; background: #0b0f19; color: white; text-align: left; direction: ltr; font-size: 0.95rem; font-weight: 500;">
                         <button type="button" onclick="resetPersonaFormInputs(); saveCurrentAccData();" title="پاک‌سازی تمام فیلدها و شروع مجدد" style="background: #334155; color: #cbd5e1; border: 1px solid #475569; padding: 0 12px; border-radius: 6px; font-size: 0.78rem; cursor: pointer; white-space: nowrap;">🧹 ریست</button>
                     </div>
                     <input type="hidden" id="accUsername" value="">
@@ -287,7 +438,7 @@
                 
                 <div style="display: flex; gap: 8px; flex-wrap: wrap;">
                     <button id="btnAnalyzePersona" onclick="analyzeAccountWithAI()" style="background: linear-gradient(90deg, #4f46e5 0%, #6366f1 100%); color: white; border: none; padding: 11px 20px; border-radius: 6px; cursor: pointer; font-weight: bold; font-size: 0.9rem; display: flex; align-items: center; gap: 8px; box-shadow: 0 4px 14px rgba(79, 70, 229, 0.4); transition: all 0.2s; white-space: nowrap;">
-                        🔍 تحلیل و تنظیم هوشمند با AI
+                        🔍 تحلیل خودکار پروفایل X و استخراج کامل پرسونا
                     </button>
                     <button id="btnSavePersona" onclick="saveCurrentAccData(true)" style="background: linear-gradient(90deg, #059669 0%, #10b981 100%); color: white; border: none; padding: 11px 20px; border-radius: 6px; cursor: pointer; font-weight: bold; font-size: 0.9rem; display: flex; align-items: center; gap: 8px; box-shadow: 0 4px 14px rgba(16, 185, 129, 0.35); transition: all 0.2s; white-space: nowrap;">
                         💾 ذخیره تغییرات اکانت
@@ -295,10 +446,18 @@
                 </div>
             </div>
 
+            <!-- ورودی متن بیو، توییت‌های پین‌شده، یا پست‌های اخیر اکانت -->
+            <div style="margin-bottom: 12px;">
+                <label for="accProfileRawText" style="font-weight: bold; color: #cbd5e1; display: block; margin-bottom: 4px; font-size: 0.82rem;">
+                    📝 ۲. متن بیو، توییت‌های پین‌شده، یا نمونه پست‌های اخیر اکانت (جهت درک عمیق‌تر لحن و هویت):
+                </label>
+                <textarea id="accProfileRawText" placeholder="می‌توانید متن Bio اکانت، چند توییت پربازدید، نمونه پست‌ها یا موضوعات اصلی فعالیت را اینجا پیست کنید..." style="width: 100%; height: 60px; padding: 8px 12px; border-radius: 6px; border: 1px solid #4338ca; background: #0b0f19; color: white; resize: vertical; font-size: 0.82rem; line-height: 1.5;"></textarea>
+            </div>
+
             <!-- آپلود اسکرین‌شات از صفحه پروفایل یا پست‌ها جهت تحلیل تصویری و بینایی ماشین (Vision) -->
             <div style="margin-bottom: 12px; background: rgba(15, 23, 42, 0.6); padding: 10px 14px; border-radius: 8px; border: 1px dashed #6366f1;">
-                <label for="accScreenshotInput" style="font-weight: bold; color: #38bdf8; display: block; margin-bottom: 6px; font-size: 0.86rem; cursor: pointer;">
-                    📸 آپلود اسکرینشات از صفحه پروفایل یا پستها (جهت تحلیل تصویری)
+                <label for="accScreenshotInput" style="font-weight: bold; color: #38bdf8; display: block; margin-bottom: 6px; font-size: 0.84rem; cursor: pointer;">
+                    📸 ۳. آپلود اسکرین‌شات از پروفایل، توییت‌ها یا صفحه اکانت (جهت تحلیل تصویری Vision AI):
                 </label>
                 <div style="display: flex; gap: 10px; align-items: center; flex-wrap: wrap;">
                     <input type="file" id="accScreenshotInput" accept="image/*" onchange="handleAccountScreenshotSelected(this)" style="color: #cbd5e1; font-size: 0.82rem; flex: 1; min-width: 220px;">
@@ -314,13 +473,13 @@
 
             <!-- وضعیت بارگذاری برجسته (Visual Loading Indicator) -->
             <div id="loadingStatus" style="display: none; background: rgba(14, 165, 233, 0.2); border: 1px solid #0284c7; color: #38bdf8; padding: 12px 18px; border-radius: 8px; font-size: 0.9rem; font-weight: bold; margin-bottom: 12px; text-align: center; box-shadow: 0 4px 12px rgba(2, 132, 199, 0.25);">
-                ⏳ در حال تحلیل و تنظیم هوشمند هویت اکانت...
+                ⏳ در حال تحلیل خودکار پروفایل X و استخراج هویت پرسونا...
             </div>
 
             <!-- منوی کشویی انتخاب ۱۰ شخصیت آماده (Presets ده‌گانه فارسی) -->
             <div style="padding-top: 12px; border-top: 1px solid rgba(99, 102, 241, 0.25);">
                 <label for="accPresetSelect" style="font-size: 0.84rem; color: #cbd5e1; font-weight: bold; display: block; margin-bottom: 6px;">
-                    📚 انتخاب شخصیت آماده برای تکمیل خودکار فرم (۱۰ پروفایل پیش‌تنظیم):
+                    📚 یا انتخاب یک کاراکتر آماده از پیش‌تنظیم‌ها (۱۰ پروفایل پیش‌تنظیم):
                 </label>
                 <select id="accPresetSelect" onchange="applyPresetPersona(this.value)" class="select-style" style="width: 100%; padding: 9px 12px; border-radius: 6px; border: 1px solid #4338ca; background: #0b0f19; color: white; font-size: 0.88rem;">
                     <option value="">-- انتخاب یک شخصیت آماده برای تکمیل خودکار (۱۰ پروفایل) --</option>
@@ -508,6 +667,12 @@
                 <div>
                     <label for="accAngles" style="font-size: 0.82rem; color: #cbd5e1; font-weight: bold; display: block; margin-bottom: 4px;">🎯 زوایای ورود به موضوع (Angles):</label>
                     <input type="text" id="accAngles" oninput="saveCurrentAccData()" style="width: 100%; padding: 8px 10px; border-radius: 6px; border: 1px solid #334155; background: #1e293b; color: white; font-size: 0.85rem;" placeholder="۱. تحلیل عمیق / ۲. ابعاد حقوقی / ۳. بررسی پیامدها">
+                </div>
+
+                <!-- accVisualTone: هویت بصری و سبک پایدار تصویر اکانت -->
+                <div style="grid-column: 1 / -1; background: #0c1527; padding: 10px 12px; border-radius: 6px; border: 1px solid #1e40af;">
+                    <label for="accVisualTone" style="font-size: 0.84rem; color: #38bdf8; font-weight: bold; display: block; margin-bottom: 4px;">🎨 هویت بصری، سبک عکاسی و ثبات برند اکانت (Visual Tone & Aesthetic Identity):</label>
+                    <input type="text" id="accVisualTone" oninput="saveCurrentAccData()" style="width: 100%; padding: 8px 10px; border-radius: 6px; border: 1px solid #0284c7; background: #070d19; color: #e0f2fe; font-size: 0.85rem;" placeholder="مثال: عکس‌های مستند و ژورنالیستی بدون رتوش با لنز ۳۵ میلی‌متری، نور طبیعی خیابان، بافت واقعی و ضد کلیشه استوک">
                 </div>
 
                 <!-- accUserNotes: باورها، اصول ثابت و یادداشت‌های خاص کاربر -->
@@ -794,46 +959,112 @@
             <div id="outAiSuggestions" class="content-box-ai">منتظر اجرا...</div>
         </div>
 
-        <!-- پنل پرامپت انگلیسی ساخت تصویر -->
-        <div class="card">
+        <!-- پنل پیشرفته سامانه یکپارچه پرامپت تصویر و پرسونا -->
+        <div class="card" id="imagePromptCard">
             <div class="card-header-flex">
-                <h4 class="card-title">🎨 پنل پرامپت انگلیسی ساخت تصویر</h4>
-                <div style="display:flex; gap:4px;">
-                    <button class="btn-single-run" onclick="runSingle('image_prompt', false)">🔄 ساخت</button>
+                <div>
+                    <h4 class="card-title">🎨 سامانه یکپارچه پرامپت تصویر و پرسونا (Unified AI Image Prompt System)</h4>
+                    <span style="font-size: 0.75rem; color: #94a3b8;">تولید پرامپت تک‌تصویر منطبق با پرسونا، ترکیب‌بندی طبیعی و کنترل شدت بصری</span>
+                </div>
+                <div style="display:flex; gap:4px; flex-wrap: wrap;">
+                    <button class="btn-single-run" onclick="runSingle('image_prompt', false)">🔄 ساخت پرامپت</button>
                     <button class="btn-rewrite" onclick="runSingle('image_prompt', true)">✍️ بازنویسی</button>
-                    <button class="btn-translate" onclick="translateSectionContent('outImagePrompt')">🌐 ترجمه</button>
-                    <button class="btn-copy" onclick="copyDirect('outImagePrompt')">📋 کپی</button>
+                    <button class="btn-copy" onclick="copyActiveImagePrompt()">📋 کپی پرامپت فعال</button>
                 </div>
             </div>
-            <div id="outImagePrompt" class="content-box" style="height: 90px; max-height: 90px; font-family: monospace; direction: ltr; text-align: left; white-space: pre-wrap;">منتظر اجرا...</div>
-            
-            <div style="display: flex; gap: 10px; margin-top: 12px; flex-wrap: wrap;">
-                <select id="imageStyleSelect" class="select-style" style="flex: 1;">
-                    <option value="cinematic" selected>سبک: سینمایی (Cinematic)</option>
-                    <option value="editorial">سبک: پوستری (Editorial Poster)</option>
-                    <option value="thumbnail">سبک: تامبنیل (Video Thumbnail)</option>
-                    <option value="photorealistic">سبک: واقع‌گرایانه / عکاسی (Photorealistic / 35mm Photo)</option>
-                    <option value="minimalist">سبک: مینیمال و مدرن (Minimalist & Modern Graphic)</option>
-                    <option value="digital_art">سبک: تصویرسازی دیجیتال / آرت (Digital Art / Concept Art)</option>
-                    <option value="cyberpunk">سبک: سایبرپانک / نئون (Cyberpunk / Neon)</option>
-                    <option value="dark_documentary">سبک: تاریک و مستند (Dark Documentary)</option>
-                </select>
-                <select id="imageRatioSelect" class="select-style" style="flex: 1;">
-                    <option value="16:9">نسبت ابعاد: 16:9 (افقی استاندارد)</option>
-                    <option value="1:1">نسبت ابعاد: 1:1 (مربعی)</option>
-                    <option value="9:16">نسبت ابعاد: 9:16 (عمودی/استوری)</option>
-                </select>
+
+            <!-- نگهدارنده‌های منطقی پنهان جهت اتصال بدون وقفه ماژول‌های جاوااسکریپت -->
+            <span id="activePersonaBadgeInImageCard" style="display: none;">اکانت: فعال</span>
+
+            <!-- کنترل‌های سه‌گانه: سبک بصری، نسبت ابعاد، شدت دراما -->
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 10px; margin-bottom: 12px; background: #0b1120; border: 1px solid #1e293b; padding: 10px 12px; border-radius: 8px;">
+                <div>
+                    <label style="display: block; font-size: 0.75rem; color: #94a3b8; font-weight: bold; margin-bottom: 4px;">🎭 سبک بصری (Visual Style):</label>
+                    <select id="imageVisualSelect" class="form-select" style="width: 100%; background: #0f172a; color: #e2e8f0; border: 1px solid #334155; padding: 6px 10px; border-radius: 6px; font-size: 0.8rem;" onchange="onImagePromptOptionChanged()">
+                        <option value="recommended" selected>✅ سبک پیشنهادی پرسونا (Recommended Style)</option>
+                        <option value="dramatic">🎬 سینمایی و دراماتیک (Dramatic / Cinematic)</option>
+                        <option value="viral_poster">📢 پوستر پربازدید و اثرگذار (High-Impact / Viral Poster)</option>
+                    </select>
+                </div>
+                <div>
+                    <label style="display: block; font-size: 0.75rem; color: #94a3b8; font-weight: bold; margin-bottom: 4px;">📐 ترکیب‌بندی و نسبت ابعاد (Aspect Ratio):</label>
+                    <select id="imageAspectRatioSelect" class="form-select" style="width: 100%; background: #0f172a; color: #e2e8f0; border: 1px solid #334155; padding: 6px 10px; border-radius: 6px; font-size: 0.8rem;" onchange="onImagePromptOptionChanged()">
+                        <option value="16:9" selected>📐 افقی ۱۶:۹ (Wide Landscape for X Feeds)</option>
+                        <option value="1:1">⏹️ مربع ۱:۱ (Square 1:1 Feed Post)</option>
+                        <option value="9:16">📱 عمودی ۹:۱۶ (Vertical 9:16 Mobile Stories)</option>
+                    </select>
+                </div>
+                <div>
+                    <label style="display: block; font-size: 0.75rem; color: #94a3b8; font-weight: bold; margin-bottom: 4px;">⚡ شدت بصری و کنتراست (Visual Intensity):</label>
+                    <select id="imageIntensitySelect" class="form-select" style="width: 100%; background: #0f172a; color: #e2e8f0; border: 1px solid #334155; padding: 6px 10px; border-radius: 6px; font-size: 0.8rem;" onchange="onImagePromptOptionChanged()">
+                        <option value="subtle">🌱 ملایم و طبیعی (Subtle / Soft Realism)</option>
+                        <option value="balanced" selected>⚖️ متعادل و استاندارد (Balanced / Standard)</option>
+                        <option value="high_impact">⚡ پرکنتراست و دراماتیک (High Impact / Dramatic)</option>
+                    </select>
+                </div>
             </div>
 
-            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 10px; margin-top: 12px;">
-                <button class="btn-external-ai" onclick="copyPromptAndOpenGemini()">
-                    📋 کپی هوشمند + باز کردن مستقیم Gemini
+            <!-- بخش تاشو تحلیل سبک و علت (Collapsible Reasoning Box - به طور پیش‌فرض بسته) -->
+            <details id="imageReasoningDetails" style="background: rgba(30, 58, 138, 0.18); border: 1px solid #1e3a8a; border-radius: 8px; margin-bottom: 12px; overflow: hidden;">
+                <summary style="cursor: pointer; font-size: 0.82rem; font-weight: bold; color: #93c5fd; display: flex; align-items: center; justify-content: space-between; padding: 8px 12px; background: rgba(30, 58, 138, 0.35); user-select: none;">
+                    <span style="display: flex; align-items: center; gap: 6px;">🎯 سبک پیشنهادی و تحلیل علت انتخاب (Recommended Style & Reasoning)</span>
+                    <span style="font-size: 0.72rem; color: #60a5fa; font-weight: normal;">مشاهده تحلیل ▾</span>
+                </summary>
+                <div id="imageReasoningContent" style="padding: 10px 14px; color: #cbd5e1; font-size: 0.82rem; line-height: 1.6;">
+                    پس از اجرای تولید، تحلیل تخصصی علت انتخاب سبک متناسب با پرسونا و سوژه خبر در این بخش قرار می‌گیرد.
+                </div>
+            </details>
+
+            <!-- باکس تک پرامپت فعال (Single Active Prompt Output Block) -->
+            <div style="background: #0f172a; border: 1px solid #334155; border-radius: 8px; padding: 12px; margin-bottom: 12px;">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+                    <div style="display: flex; align-items: center; gap: 8px;">
+                        <span id="activePromptTitleBadge" style="font-weight: bold; font-size: 0.83rem; color: #38bdf8;">پرامپت انگلیسی فعال: ✅ سبک پیشنهادی پرسونا</span>
+                        <span id="activePromptParamsBadge" style="background: rgba(56, 189, 248, 0.15); color: #38bdf8; font-size: 0.72rem; padding: 2px 8px; border-radius: 4px;">16:9 | Balanced</span>
+                    </div>
+                    <div style="display: flex; gap: 6px;">
+                        <button class="btn-copy" style="padding: 4px 10px; font-size: 0.78rem; background: #0f766e; color: white;" onclick="translateActivePromptToPersian()">🌐 ترجمه به فارسی</button>
+                        <button class="btn-copy" style="padding: 4px 12px; font-size: 0.78rem;" onclick="copyActiveImagePrompt()">📋 کپی پرامپت</button>
+                    </div>
+                </div>
+                
+                <div id="activeImagePromptBox" class="prompt-text-block" style="font-family: 'JetBrains Mono', Consolas, monospace; font-size: 0.82rem; color: #e2e8f0; direction: ltr; text-align: left; background: #090d16; padding: 12px; border-radius: 6px; border: 1px solid #1e293b; user-select: all; line-height: 1.5; word-break: break-word; min-height: 80px;">
+                    Click "🔄 ساخت پرامپت" or "⚡ اجرای سراسری" to generate a single-image prompt with active persona inheritance.
+                </div>
+
+                <!-- باکس نمایش تاشو/بازشونده ترجمه فارسی پرامپت -->
+                <div id="persianTranslationContainer" style="display: none; margin-top: 10px; background: rgba(15, 118, 110, 0.15); border: 1px solid rgba(45, 212, 191, 0.35); border-radius: 6px; padding: 10px 12px;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
+                        <span style="font-size: 0.8rem; font-weight: bold; color: #2dd4bf; display: flex; align-items: center; gap: 5px;">
+                            🇮🇷 ترجمه روان فارسی پرامپت تصویری:
+                        </span>
+                        <div style="display: flex; gap: 6px;">
+                            <button class="btn-copy" style="padding: 2px 8px; font-size: 0.72rem; background: #0f766e; color: white;" onclick="copyPersianPromptTranslation()">📋 کپی ترجمه</button>
+                            <button class="btn-copy" style="padding: 2px 6px; font-size: 0.72rem; background: transparent; color: #94a3b8; border: 1px solid #334155;" onclick="document.getElementById('persianTranslationContainer').style.display='none'">✕ بستن</button>
+                        </div>
+                    </div>
+                    <div id="persianTranslationText" style="font-size: 0.83rem; color: #f0fdfa; line-height: 1.65; direction: rtl; text-align: right;">
+                        در حال بارگذاری ترجمه...
+                    </div>
+                </div>
+
+                <div id="outImagePrompt" style="display: none;"></div>
+                <div id="universalNegativePromptBox" style="display: none;">blurry, deformed, cartoonish, oversaturated, low quality, duplicate, extra limbs, watermark, text artifact, distorted perspective</div>
+            </div>
+
+            <!-- دکمه‌های اقدام سریع در یک ردیف منظم و مدرن -->
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 10px; border-top: 1px solid #1e293b; padding-top: 12px;">
+                <button class="btn-copy" style="padding: 9px 14px; font-size: 0.8rem; font-weight: bold; justify-content: center; display: flex; align-items: center; gap: 6px; background: #0f766e; color: white;" onclick="translateActivePromptToPersian()">
+                    🌐 ترجمه به فارسی
                 </button>
-                <button class="btn-bing-ai" onclick="openBingImageCreator()">
-                    🎨 کپی هوشمند + باز کردن Bing Image Creator (DALL-E 3)
+                <button class="btn-external-ai" style="padding: 9px 14px; font-size: 0.8rem; justify-content: center; display: flex; align-items: center; gap: 6px;" onclick="copyActivePromptAndOpenGemini()">
+                    ✨ پرامپت فعال + Gemini
                 </button>
-                <button class="btn-chatgpt-ai" onclick="openChatGPTImage()">
-                    🤖 کپی هوشمند + باز کردن ChatGPT
+                <button class="btn-bing-ai" style="padding: 9px 14px; font-size: 0.8rem; justify-content: center; display: flex; align-items: center; gap: 6px;" onclick="copyActivePromptAndOpenBing()">
+                    🎨 پرامپت فعال + Bing Image
+                </button>
+                <button class="btn-chatgpt-ai" style="padding: 9px 14px; font-size: 0.8rem; justify-content: center; display: flex; align-items: center; gap: 6px;" onclick="copyActivePromptAndOpenChatGPT()">
+                    🤖 پرامپت فعال + ChatGPT
                 </button>
             </div>
         </div>
@@ -1643,7 +1874,8 @@ accounts = accounts.map(acc => ({
     userNotes: acc.userNotes || "",
     keywords: acc.keywords || "",
     rules: acc.rules || "",
-    angles: acc.angles || ""
+    angles: acc.angles || "",
+    visualTone: acc.visualTone || "مستند، واقع‌گرایانه و بدون جلوه‌های مصنوعی (Documentary realism, authentic lighting)"
 }));
 
 let activeAccId = accounts[0]?.id || null;
@@ -1715,6 +1947,7 @@ function buildFullSystemInstruction(acc) {
 - Signature Phrases: ${acc.signaturePhrases || 'ثبت نشده'}
 - Red Lines & Forbidden: ${acc.forbidden || 'توهین ممنوع، شایعه ممنوع، ادعای بدون سند ممنوع'}
 - Keywords & Structural Rules: ${acc.keywords || 'ثبت نشده'} | ${acc.rules || 'جملات کوتاه و منسجم، شروع با قلاب جذاب، پرهیز از ایموجی افراطی'} | ${acc.angles || 'تحلیل عمیق رویداد / بازتاب ابعاد ناگفته / بررسی پیامدها'}
+- Visual Aesthetic Identity: ${acc.visualTone || 'مستند، واقع‌گرایانه و بدون جلوه‌های مصنوعی (Documentary realism, authentic lighting)'}
 - Core Beliefs & User Context: ${acc.userNotes ? acc.userNotes : 'توضیحات تکمیلی ثبت نشده است.'}`;
 }
 
@@ -1815,6 +2048,10 @@ function resetPersonaFormInputs() {
     if (anglesEl) anglesEl.value = "";
     const notesEl = document.getElementById('accUserNotes');
     if (notesEl) notesEl.value = "";
+    const visEl = document.getElementById('accVisualTone');
+    if (visEl) visEl.value = "";
+    const rawTextEl = document.getElementById('accProfileRawText');
+    if (rawTextEl) rawTextEl.value = "";
 
     const presetEl = document.getElementById('accPresetSelect');
     if (presetEl) presetEl.value = "";
@@ -1843,6 +2080,7 @@ function handleUsernameChange(newVal) {
         acc.rules = "";
         acc.angles = "";
         acc.userNotes = "";
+        acc.visualTone = "";
         saveCurrentAccData();
     }
 }
@@ -1903,6 +2141,7 @@ function loadAccountDataToForm(acc) {
     if (document.getElementById('accRules')) document.getElementById('accRules').value = acc.rules || "";
     if (document.getElementById('accAngles')) document.getElementById('accAngles').value = acc.angles || "";
     if (document.getElementById('accUserNotes')) document.getElementById('accUserNotes').value = acc.userNotes || "";
+    if (document.getElementById('accVisualTone')) document.getElementById('accVisualTone').value = acc.visualTone || "";
 
     updateSliderDisplays();
     updatePersonaQualityMeter();
@@ -1958,6 +2197,7 @@ function saveCurrentAccData(showAlert = false) {
     acc.rules = (document.getElementById('accRules')?.value || "").trim();
     acc.angles = (document.getElementById('accAngles')?.value || "").trim();
     acc.userNotes = (document.getElementById('accUserNotes')?.value || "").trim();
+    acc.visualTone = (document.getElementById('accVisualTone')?.value || "").trim();
 
     localStorage.setItem('acc_username_v_final_full', JSON.stringify(accounts));
 
@@ -2011,7 +2251,8 @@ function addNewAccount() {
         userNotes: "",
         keywords: "",
         rules: "",
-        angles: ""
+        angles: "",
+        visualTone: "مستند، واقع‌گرایانه و بدون جلوه‌های مصنوعی (Documentary realism, authentic lighting)"
     };
 
     accounts.push(newAcc);
@@ -2074,13 +2315,14 @@ function updatePersonaQualityMeter() {
     if (acc.forbidden && acc.forbidden.trim().length > 2) score += 8;
 
     // فیلدهای پیشرفته
-    if (acc.audience && acc.audience.trim().length > 3) score += 6;
-    if (acc.emotion && acc.emotion.trim().length > 2) score += 6;
-    if (acc.certaintyLevel) score += 4;
-    if (acc.keywords && acc.keywords.trim().length > 2) score += 4;
-    if (acc.rules && acc.rules.trim().length > 2) score += 4;
-    if (acc.angles && acc.angles.trim().length > 2) score += 4;
-    if (acc.userNotes && acc.userNotes.trim().length > 3) score += 4;
+    if (acc.audience && acc.audience.trim().length > 3) score += 5;
+    if (acc.emotion && acc.emotion.trim().length > 2) score += 5;
+    if (acc.certaintyLevel) score += 3;
+    if (acc.keywords && acc.keywords.trim().length > 2) score += 3;
+    if (acc.rules && acc.rules.trim().length > 2) score += 3;
+    if (acc.angles && acc.angles.trim().length > 2) score += 3;
+    if (acc.visualTone && acc.visualTone.trim().length > 3) score += 5;
+    if (acc.userNotes && acc.userNotes.trim().length > 3) score += 3;
 
     score = Math.min(100, Math.max(0, score));
 
@@ -2150,6 +2392,7 @@ function applyPresetPersona(presetKey) {
     if (document.getElementById('accRules')) document.getElementById('accRules').value = preset.rules || "";
     if (document.getElementById('accAngles')) document.getElementById('accAngles').value = preset.angles || "";
     if (document.getElementById('accUserNotes')) document.getElementById('accUserNotes').value = preset.userNotes || "";
+    if (document.getElementById('accVisualTone')) document.getElementById('accVisualTone').value = preset.visualTone || "";
 
     updateSliderDisplays();
     saveCurrentAccData();
@@ -2340,6 +2583,7 @@ function applyAccountAnalysisValues(data, username) {
     const rulesVal = data.rules || "";
     const anglesVal = data.angles || "";
     const notesVal = data.userNotes || "";
+    const visualToneVal = data.visualTone || data.accVisualTone || data.visualStyle || "";
 
     // تابع کمکی برای مقداردهی صریح المان و ارسال رویدادهای input و change
     function setValAndDispatch(id, val) {
@@ -2392,6 +2636,7 @@ function applyAccountAnalysisValues(data, username) {
     setValAndDispatch('accCertaintyLevel', certVal);
     if (rulesVal) setValAndDispatch('accRules', rulesVal);
     if (anglesVal) setValAndDispatch('accAngles', anglesVal);
+    if (visualToneVal) setValAndDispatch('accVisualTone', visualToneVal);
     if (notesVal) {
         const nEl = document.getElementById('accUserNotes');
         if (nEl && !nEl.value) setValAndDispatch('accUserNotes', notesVal);
@@ -2476,6 +2721,7 @@ async function analyzeAccountWithAI() {
 
     let rawInput = (document.getElementById('accUsernameInput')?.value || document.getElementById('accUsername')?.value || "").trim();
     const userNotes = (document.getElementById('accUserNotes')?.value || "").trim();
+    const rawBioText = (document.getElementById('accProfileRawText')?.value || "").trim();
     const hasScreenshot = !!(uploadedAccountScreenshotBase64 && uploadedAccountScreenshotBase64.length > 20);
 
     // 2. پاک‌سازی و استخراج نام کاربری از ورودی یا لینک کامل X/Twitter
@@ -2504,9 +2750,9 @@ async function analyzeAccountWithAI() {
         alert("خطا در استخراج اطلاعات. لطفاً اسکرینشات پروفایل یا چند خط بیو را وارد کنید.");
     };
 
-    // بررسی خالی نبودن همه ورودی‌ها (نام کاربری، توضیحات دستی، اسکرین‌شات)
-    if (!cleanedUsername && !userNotes && !hasScreenshot) {
-        alert("لطفاً نام کاربری، لینک اکانت X، توضیحات دستی یا اسکرین‌شات پروفایل را وارد کنید.");
+    // بررسی خالی نبودن همه ورودی‌ها (نام کاربری، توضیحات دستی، بیو متنی، اسکرین‌شات)
+    if (!cleanedUsername && !userNotes && !rawBioText && !hasScreenshot) {
+        alert("لطفاً نام کاربری، لینک اکانت X، متن بیو/توییت‌ها، توضیحات دستی یا اسکرین‌شات پروفایل را وارد کنید.");
         if (statusEl) statusEl.style.display = "none";
         if (analyzeBtn) {
             analyzeBtn.disabled = false;
@@ -2540,11 +2786,11 @@ async function analyzeAccountWithAI() {
 
     // 4. اجرای گاردریل و استخراج داده‌ها
     try {
-        let profileText = "";
+        let profileText = rawBioText || "";
         let fetchedOnlineSuccess = false;
 
-        // اگر اسکرین‌شات نبود، تلاش برای واکشی آنلاین
-        if (cleanedUsername && !hasScreenshot) {
+        // اگر اسکرین‌شات و متن دستی نبود، تلاش برای واکشی آنلاین
+        if (cleanedUsername && !hasScreenshot && !profileText) {
             try {
                 const controller = new AbortController();
                 const timeoutId = setTimeout(() => controller.abort(), 4000);
@@ -2567,13 +2813,14 @@ async function analyzeAccountWithAI() {
         let systemPrompt = "";
         if (hasScreenshot) {
             systemPrompt = `تو یک استراتژیست ارشد محتوا، متخصص بینایی ماشین و معمار پرسونا در پلتفرم X (توییتر) هستی.
-وظیفه تو تحلیل تخصصی تصویر پیوست‌شده (اسکرین‌شات صفحه پروفایل یا پست‌های اکانت) و استخراج دقیق مؤلفه‌های شخصیتی اکانت است.
+وظیفه تو تحلیل تخصصی تصویر پیوست‌شده (اسکرین‌شات صفحه پروفایل یا پست‌های اکانت) و استخراج دقیق مؤلفه‌های شخصیتی و هویت بصری اکانت است.
 
 📸 دستورالعمل بینایی ماشین و تحلیل اسکرین‌شات (Vision OCR Instruction):
-- متن بیو، نام کاربری، توییت‌های پین‌شده، لحن و جهت‌گیری موجود در تصویر را به دقت بررسی کن.
+- متن بیو، نام کاربری، توییت‌های پین‌شده، لحن، سبک بصری تصاویر و جهت‌گیری موجود در تصویر را به دقت بررسی کن.
 - فیلدهای هویتی اکانت را استخراج کن.
 
 [شناسه اکانت]: @${cleanedUsername || 'بر اساس تصویر'}
+[متن بیو/توییت‌های پیوست]: "${rawBioText || 'ارائه نشده'}"
 [توضیحات تکمیلی دستی کاربر]: "${userNotes || 'توضیح دستی ندارد'}"
 
 اگر تصویر ناخوانا یا فاقد اطلاعات لازم برای درک هویت اکانت است، دقیقاً خروجی زیر را بازگردان:
@@ -2593,7 +2840,8 @@ async function analyzeAccountWithAI() {
   "emotion": "بار عاطفی و احساس غالب",
   "certaintyLevel": 4,
   "rules": "قواعد ساختاری و نحوه نگارش",
-  "angles": "زوایای ورود به موضوع"
+  "angles": "زوایای ورود به موضوع",
+  "visualTone": "هویت بصری و سبک تصویرسازی متناسب با هویت اکانت (مثال: مستند و واقع‌گرایانه با نور طبیعی / Editorial news photojournalist / گرافیک مینیمال داده‌محور)"
 }
 
 مقادیر مجاز:
@@ -2603,11 +2851,11 @@ async function analyzeAccountWithAI() {
 - risk: عدد صحیح ۱ تا ۵ (1=محتاط، 3=متعادل، 5=بسیار صریح و بی‌پروا)`;
         } else {
             systemPrompt = `تو یک استراتژیست ارشد تولید محتوا و معماری پرسونا در پلتفرم X (توییتر) هستی.
-وظیفه تو استخراج و تنظیم دقیق مؤلفه‌های اصلی هویت اکانت @${cleanedUsername || 'کاربر'} است.
+وظیفه تو استخراج و تنظیم دقیق مؤلفه‌های اصلی هویت و لحن بصری اکانت @${cleanedUsername || 'کاربر'} است.
 
 [شناسه اکانت]: @${cleanedUsername || 'کاربر'}
+[متن بیو/توییت‌ها]: "${profileText ? profileText.slice(0, 1800) : 'محتوای متنی ثبت نشده است.'}"
 [توضیحات دستی کاربر]: "${userNotes || 'توضیحات دستی ثبت نشده است.'}"
-[متن پروفایل]: "${profileText ? profileText.slice(0, 1500) : 'محتوای پروفایل آنلاین در دسترس نبود.'}"
 
 اگر هویت اکانت کاملاً نامشخص و اطلاعات موجود ناکافی است، دقیقاً خروجی زیر را بازگردان:
 {"status": false}
@@ -2626,7 +2874,8 @@ async function analyzeAccountWithAI() {
   "emotion": "بار عاطفی و احساس غالب پیام‌ها",
   "certaintyLevel": 4,
   "rules": "قواعد ساختاری، ایموجی و هشتگ",
-  "angles": "زوایای ورود به موضوع"
+  "angles": "زوایای ورود به موضوع",
+  "visualTone": "هویت بصری و سبک تصویرسازی متناسب با اکانت (مثال: عکاسی مستند خبری، زاویه دید عریض و بدون اغراق مصنوعی)"
 }
 
 مقادیر مجاز:
@@ -3061,14 +3310,57 @@ function buildSystemPromptForSection(sectionType, isRewrite = false) {
 خروجی را به صورت JSON زیر بازگردان:
 { "ai_suggestions": "📌 پست پیشنهادی: ...\\n💬 کپشن کوت پیشنهادی: ...\\n💭 کامنت پیشنهادی: ...\\n🖼️ متنواره پیشنهادی: ...\\n🏷️ هشتگ‌های پیشنهادی: ...\\n🎨 تصویر پیشنهادی (الگوی ساخت visual): ..." }`;
     } else if (sectionType === 'image_prompt') {
-        const style = document.getElementById('imageStyleSelect').value;
-        const ratio = document.getElementById('imageRatioSelect').value;
-        sectionPromptDetails = `وظیفه: یک پرامپت مفصل و بسیار حرفه‌ای انگلیسی برای تولید تصویر با Midjourney یا DALL-E 3 بساز.
-سبک تصویر: ${style}
-نسبت ابعاد: --ar ${ratio.replace(':', 'index')}
-زبان خروجی این بخش باید حتماً انگلیسی باشد.
-خروجی را به صورت JSON زیر بازگردان:
-{ "image_prompt": "detailed English image generation prompt..." }`;
+        const visualIdentity = acc.visualTone || "Documentary realism, authentic natural lighting, photojournalistic framing";
+        const selectedRatio = document.getElementById('imageAspectRatioSelect')?.value || "16:9";
+        const selectedIntensity = document.getElementById('imageIntensitySelect')?.value || "balanced";
+        const overlayTextVal = document.getElementById('customOverlayInput')?.value?.trim() || currentTopOverlayText?.trim() || "";
+
+        let ratioDesc = "wide landscape composition optimized for 16:9 social media feed";
+        if (selectedRatio === "1:1") ratioDesc = "square 1:1 balanced composition centered for social feed";
+        if (selectedRatio === "9:16") ratioDesc = "vertical tall 9:16 composition optimized for mobile stories and full-screen feed";
+
+        let intensityDesc = "balanced authentic lighting with standard editorial contrast and natural sharpness";
+        if (selectedIntensity === "subtle") intensityDesc = "subtle soft lighting with understated natural realism, delicate shadow transitions, and organic tones";
+        if (selectedIntensity === "high_impact") intensityDesc = "high-impact dramatic volumetric lighting with deep chiaroscuro contrast, pronounced rim light, and intense visual tension";
+
+        let overlayPromptInstruction = "";
+        if (overlayTextVal) {
+            overlayPromptInstruction = `\n۸. ادغام مستقیم متن متنواره کاربر در پرامپت (Overlay Typography Integration):\n   - متن متنواره فعال: "${overlayTextVal}"\n   - در تمام پرامپت‌های انگلیسی به صورت استاندارد قید کن که این متن با تایپوگرافی تمیز و متناسب در تصویر قرار گیرد (مثال: featuring the clear, elegant title text "${overlayTextVal}" in clean, readable modern typography).`;
+        }
+
+        sectionPromptDetails = `وظیفه: تولید تخصصی ۳ پرامپت حرفه‌ای تصویرسازی انگلیسی به همراه تحلیل دلیل انتخاب سبک بصری و پرامپت منفی، مبتنی بر ارث‌بری خودکار از هویت بصری پرسونا.
+
+🎯 قوانین الزامی و ضوابط طلایی (GOLDEN RULES):
+۱. ارث‌بری خودکار پرسونا و ثبات برند بصری (Automatic Persona Inheritance & Visual Consistency):
+   - هویت بصری اکانت: "${visualIdentity}"
+   - نقش اکانت: "${acc.characterRole || 'تحلیل‌گر تخصصی'}"
+   - پرامپت‌ها باید لحن و حال و هوای بصری ماندگار این اکانت را حفظ کرده و از تغییرات ناگهانی و نامتناسب دوری نمایند.
+۲. بخش تحلیل علت (🎯 Recommended Style & Reasoning):
+   - به زبان فارسی توضیح بده چرا این سبک بصری برای این اکانت و این خبر خاص انتخاب شده است (تحلیل ۲ تا ۳ خطی دقیق و عمیق).
+۳. الزام صریح تولید تک‌تصویر (Single Image Generation Constraint):
+   - تمام پرامپت‌های انگلیسی باید صریحاً و دقیقاً با عبارت "Generate a single, focused photograph of..." (برای سبک‌های واقع‌گرایانه و سینمایی) یا "Generate a single, focused high-impact visual of..." (برای پوستر) آغاز شوند تا مدل‌های هوش مصنوعی چت مانند Gemini دچار لوپ تولید تصاویر چندگانه نشده و دقیقاً یک تصویر خلق کنند.
+۴. ۳ پرامپت مجزای انگلیسی بر اساس ۳ سبک بصری تولید کن:
+   - سبک اول (Recommended Style): پرامپت هماهنگ با پرسونا و واقع‌گرایانه/مستند خبری (${visualIdentity}).
+   - سبک دوم (Dramatic / Cinematic): پرامپت سینمایی، زاویه دید دراماتیک، لنز عریض و سایه‌روشن اثرگذار.
+   - سبک سوم (High-Impact / Viral Poster): پرامپت گرافیکی پوسترگونه، سمبلیک، بسیار پربازدید با تمرکز بالا روی المان‌های بصری جذاب.
+۵. قانون عدم استفاده از فلگ‌های CLI و درج طبیعی ابعاد و شدت (Cross-Model Natural Descriptions):
+   - از آوردن فلگ‌های خام خط فرمان مانند "--ar 16:9" یا "--v 6.0" اکیداً خودداری کن.
+   - در متن پرامپت به صورت توصیفی و طبیعی بنویس: "${ratioDesc}" و "${intensityDesc}".
+۶. قانون ضد کلیشه هوش مصنوعی (Anti-AI Cliché Rule):
+   - از بکار بردن واژگان زرد و توخالی مثل "8k", "photorealistic", "ultra realistic", "hyperrealistic", "trending on artstation", "octane render", "unreal engine" اکیداً خودداری کن.
+   - به جای آن، از جزئیات فنی واقعی عکاسی و هنر بصری استفاده کن: نوع دوربین (Hasselblad, Sony A7R V, Leica M), لنز و فاصله کانونی (35mm f/1.4, 50mm, 85mm portrait), نوع نورپردازی (diffused daylight, golden hour, chiaroscuro rim light), ترکیب‌بندی (wide angle establishing shot, close-up, Dutch angle), و بافت فیلم (natural film grain, 35mm photograph).
+۷. پرامپت منفی همگانی (Universal Negative Prompt): شامل موارد ممنوعه و زاید بصری (blurry, deformed, cartoonish, oversaturated, low quality, duplicate, extra limbs, watermark, text artifact, distorted perspective).${overlayPromptInstruction}
+
+ساختار خروجی را منحصراً به صورت JSON زیر بازگردان:
+{
+  "image_prompt": {
+    "reasoning": "توضیح فارسی دقیق علت انتخاب سبک بصری متناسب با پرسونا و سوژه خبر...",
+    "recommended_prompt": "Generate a single, focused photograph of [subject details], matching ${visualIdentity}, ${ratioDesc}, ${intensityDesc}...",
+    "dramatic_prompt": "Generate a single, focused cinematic photograph of [subject details], with dramatic lighting, ${ratioDesc}, ${intensityDesc}...",
+    "viral_poster_prompt": "Generate a single, focused high-impact visual of [subject details], bold focal point, ${ratioDesc}, ${intensityDesc}...",
+    "negative_prompt": "blurry, deformed, cartoonish, oversaturated, low quality, duplicate, extra limbs, watermark, text artifact, distorted perspective"
+  }
+}`;
     } else if (sectionType === 'schedule') {
         const todayDate = new Date();
         const tomorrowDate = new Date(todayDate);
@@ -3133,7 +3425,7 @@ function applySectionResult(sectionType, parsedResult) {
     } else if (sectionType === 'ai_suggestions') {
         document.getElementById('outAiSuggestions').innerText = parsedResult.ai_suggestions || "";
     } else if (sectionType === 'image_prompt') {
-        document.getElementById('outImagePrompt').innerText = parsedResult.image_prompt || "";
+        renderImagePromptResults(parsedResult.image_prompt);
     } else if (sectionType === 'schedule') {
         document.getElementById('outSchedule').innerText = parsedResult.schedule || "";
     }
@@ -3327,6 +3619,9 @@ function handleImageUpload(e) {
 function updateCustomOverlay(val) {
     currentTopOverlayText = val;
     if (isOverlayEnabled) redrawCanvasText();
+    if (typeof onImagePromptOptionChanged === 'function') {
+        onImagePromptOptionChanged();
+    }
 }
 
 function enableAndDrawOverlay() {
@@ -3455,39 +3750,294 @@ function redrawCanvasText() {
     });
 }
 
+function initCanvasEmpty() {
+    const canvas = document.getElementById('imageCanvas');
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
+    canvas.width = 1280;
+    canvas.height = 720;
+    ctx.fillStyle = "#0b1120";
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+    ctx.fillStyle = "#64748b";
+    ctx.font = "bold 26px 'Vazirmatn', Tahoma, sans-serif";
+    ctx.textAlign = "center";
+    ctx.direction = "rtl";
+    ctx.fillText("تصویری بارگذاری نشده است (از دکمه «📁 انتخاب و بارگیری تصویر» استفاده کنید)", canvas.width / 2, canvas.height / 2);
+}
+
 function downloadCanvasImage() {
     const canvas = document.getElementById('imageCanvas');
-    const link = document.createElement('a');
-    link.download = 'social_x_post_image.png';
-    link.href = canvas.toDataURL('image/png');
-    link.click();
+    if (!canvas) {
+        alert("بوم تصویر یافت نشد!");
+        return;
+    }
+    try {
+        const dataUrl = canvas.toDataURL('image/png');
+        const link = document.createElement('a');
+        link.download = `overlay-image-${Date.now()}.png`;
+        link.href = dataUrl;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+    } catch (err) {
+        console.error("خطا در دانلود تصویر بوم:", err);
+        alert("خطا در دانلود تصویر: لطفاً مجدداً تصویر را بارگذاری نمایید.");
+    }
 }
 
-function copyPromptAndOpenGemini() {
-    const promptText = document.getElementById('outImagePrompt').innerText;
-    if (promptText && !promptText.includes("منتظر اجرا...")) {
-        navigator.clipboard.writeText(promptText);
-        window.open('https://gemini.google.com/', '_blank');
+let currentGeneratedImagePrompts = {
+    reasoning: "",
+    recommended: "",
+    dramatic: "",
+    viral_poster: "",
+    negative: "blurry, deformed, cartoonish, oversaturated, low quality, duplicate, extra limbs, watermark, text artifact, distorted perspective"
+};
+
+function renderImagePromptResults(data) {
+    if (!data) return;
+
+    if (typeof data === 'string') {
+        currentGeneratedImagePrompts.recommended = data;
+        currentGeneratedImagePrompts.dramatic = data;
+        currentGeneratedImagePrompts.viral_poster = data;
+        currentGeneratedImagePrompts.reasoning = "پرامپت بر اساس هویت اکانت و سوژه تنظیم گردید.";
+    } else {
+        currentGeneratedImagePrompts.reasoning = data.reasoning || data.recommended_style || data.explanation || "";
+        currentGeneratedImagePrompts.recommended = data.recommended_prompt || data.primary_prompt || data.primary || data.prompt || "";
+        currentGeneratedImagePrompts.dramatic = data.dramatic_prompt || data.cinematic_prompt || data.cinematic || currentGeneratedImagePrompts.recommended;
+        currentGeneratedImagePrompts.viral_poster = data.viral_poster_prompt || data.conceptual_prompt || data.poster || currentGeneratedImagePrompts.recommended;
+        if (data.negative_prompt) {
+            currentGeneratedImagePrompts.negative = data.negative_prompt;
+        }
+    }
+
+    // به‌روزرسانی محتوای بخش تاشو تحلیل علت
+    const reasoningEl = document.getElementById('imageReasoningContent');
+    if (reasoningEl) {
+        reasoningEl.innerHTML = currentGeneratedImagePrompts.reasoning 
+            ? `<div style="display:flex; justify-content:space-between; align-items:flex-start; gap:10px;">
+                 <span>${currentGeneratedImagePrompts.reasoning}</span>
+                 <button class="btn-copy" style="padding: 2px 8px; font-size: 0.72rem; white-space:nowrap;" onclick="copyTextDirectly('${encodeURIComponent(currentGeneratedImagePrompts.reasoning)}')">📋 کپی تحلیل</button>
+               </div>`
+            : "تحلیلی ثبت نشده است.";
+    }
+
+    // به‌روزرسانی پرامپت منفی
+    const negBox = document.getElementById('universalNegativePromptBox');
+    if (negBox) {
+        negBox.innerText = currentGeneratedImagePrompts.negative;
+    }
+
+    // به‌روزرسانی نمایش پرامپت فعال
+    onImagePromptOptionChanged();
+}
+
+function onImagePromptOptionChanged() {
+    const visualStyle = document.getElementById('imageVisualSelect')?.value || 'recommended';
+    const aspectRatio = document.getElementById('imageAspectRatioSelect')?.value || '16:9';
+    const intensity = document.getElementById('imageIntensitySelect')?.value || 'balanced';
+
+    let basePrompt = currentGeneratedImagePrompts[visualStyle] || currentGeneratedImagePrompts.recommended || "";
+    if (!basePrompt || basePrompt.trim().length === 0) {
+        basePrompt = `Professional photograph matching active persona style, editorial composition, authentic natural lighting.`;
+    }
+
+    // پاک‌سازی هرگونه فلگ خط فرمان مانند --ar یا --style
+    basePrompt = basePrompt.replace(/--ar\s+[0-9:]+/gi, '').replace(/--style\s+\w+/gi, '').replace(/--v\s+[0-9.]+/gi, '').trim();
+
+    // اطمینان از قرار داشتن قید صریح تک‌تصویر (Single Image Constraint) در آغاز پرامپت
+    const lowerPrompt = basePrompt.toLowerCase();
+    if (!lowerPrompt.startsWith("generate a single") && !lowerPrompt.startsWith("a single photograph") && !lowerPrompt.startsWith("a single high-impact")) {
+        if (visualStyle === 'viral_poster') {
+            basePrompt = `Generate a single, focused high-impact visual of ${basePrompt.charAt(0).toLowerCase() + basePrompt.slice(1)}`;
+        } else if (visualStyle === 'dramatic') {
+            basePrompt = `Generate a single, focused dramatic cinematic photograph of ${basePrompt.charAt(0).toLowerCase() + basePrompt.slice(1)}`;
+        } else {
+            basePrompt = `Generate a single, focused photograph of ${basePrompt.charAt(0).toLowerCase() + basePrompt.slice(1)}`;
+        }
+    }
+
+    // تنظیم عبارات طبیعی ابعاد
+    let ratioPhrase = "wide landscape composition optimized for 16:9 social media feed";
+    if (aspectRatio === "1:1") ratioPhrase = "square 1:1 balanced composition for social post";
+    if (aspectRatio === "9:16") ratioPhrase = "vertical tall composition for mobile stories";
+
+    // تنظیم عبارات شدت
+    let intensityPhrase = "balanced editorial contrast and natural authentic lighting";
+    if (intensity === "subtle") intensityPhrase = "subtle soft lighting with understated natural realism";
+    if (intensity === "high_impact") intensityPhrase = "high-impact dramatic volumetric lighting and intense chiaroscuro contrast";
+
+    // ساخت پرامپت نهایی با ادغام طبیعی (اگر قبلاً در متن پرامپت نباشد)
+    let finalPrompt = basePrompt;
+    if (!finalPrompt.toLowerCase().includes(ratioPhrase.toLowerCase()) && !finalPrompt.toLowerCase().includes("aspect ratio") && !finalPrompt.toLowerCase().includes("composition")) {
+        finalPrompt += `, ${ratioPhrase}`;
+    }
+    if (!finalPrompt.toLowerCase().includes(intensityPhrase.toLowerCase()) && !finalPrompt.toLowerCase().includes("lighting")) {
+        finalPrompt += `, ${intensityPhrase}`;
+    }
+
+    // ادغام مستقیم متن متنواره بوم در صورت وجود (Seamless Overlay Text Integration)
+    const currentOverlayText = document.getElementById('customOverlayInput')?.value?.trim() || currentTopOverlayText?.trim() || "";
+    if (currentOverlayText) {
+        const overlayPhrase = `featuring the clear, elegant title text "${currentOverlayText}" in clean, readable modern typography`;
+        if (!finalPrompt.includes(`"${currentOverlayText}"`)) {
+            finalPrompt += `, ${overlayPhrase}`;
+        }
+    }
+
+    // به‌روزرسانی باکس تک پرامپت فعال
+    const activeBox = document.getElementById('activeImagePromptBox');
+    if (activeBox) {
+        activeBox.innerText = finalPrompt;
+    }
+
+    // مخفی‌سازی مجدد باکس ترجمه در صورت تغییر پارامترها جهت جلوگیری از ناهمخوانی
+    const transContainer = document.getElementById('persianTranslationContainer');
+    if (transContainer && transContainer.style.display !== 'none') {
+        transContainer.style.display = 'none';
+    }
+
+    const hiddenBox = document.getElementById('outImagePrompt');
+    if (hiddenBox) {
+        hiddenBox.innerText = finalPrompt;
+    }
+
+    // به‌روزرسانی نشانگرهای عنوان و تنظیمات
+    const titleBadge = document.getElementById('activePromptTitleBadge');
+    if (titleBadge) {
+        const styleNames = {
+            'recommended': '✅ سبک پیشنهادی پرسونا (Recommended)',
+            'dramatic': '🎬 سینمایی و دراماتیک (Dramatic)',
+            'viral_poster': '📢 پوستر پربازدید (High-Impact Poster)'
+        };
+        titleBadge.innerText = `پرامپت انگلیسی فعال: ${styleNames[visualStyle] || styleNames.recommended}`;
+    }
+
+    const paramsBadge = document.getElementById('activePromptParamsBadge');
+    if (paramsBadge) {
+        const ratioLabels = { '16:9': '16:9 Landscape', '1:1': '1:1 Square', '9:16': '9:16 Stories' };
+        const intensityLabels = { 'subtle': 'Subtle', 'balanced': 'Balanced', 'high_impact': 'High-Impact' };
+        paramsBadge.innerText = `${ratioLabels[aspectRatio] || '16:9'} | ${intensityLabels[intensity] || 'Balanced'}`;
+    }
+}
+
+async function translateActivePromptToPersian() {
+    const activeBox = document.getElementById('activeImagePromptBox');
+    const promptText = activeBox ? activeBox.innerText.trim() : "";
+    
+    if (!promptText || promptText.includes('Click "🔄 ساخت پرامپت"')) {
+        alert("لطفاً ابتدا پرامپت تصویری را تولید کنید.");
+        return;
+    }
+
+    const container = document.getElementById('persianTranslationContainer');
+    const textEl = document.getElementById('persianTranslationText');
+    if (container) container.style.display = 'block';
+    if (textEl) textEl.innerHTML = '<span style="color: #2dd4bf;">⏳ در حال ترجمه دقیق و روان به زبان فارسی...</span>';
+
+    try {
+        const payload = {
+            contents: [
+                {
+                    role: 'user',
+                    parts: [
+                        {
+                            text: `تو یک مترجم و مدیر هنری ارشد دوزبانه هستی. پرامپت تصویری انگلیسی زیر را به زبان فارسی بسیار روان، شیوا و توصیفی ترجمه کن تا کاربر دقیقاً بداند چه صحنه بصری، زاویه دید، نور و متنواره‌ای قرار است تولید شود. خروجی فقط و فقط متن ترجمه فارسی باشد بدون هیچ توضیح اضافی یا مارک‌داون:\n\n[English Prompt]:\n${promptText}`
+                        }
+                    ]
+                }
+            ]
+        };
+
+        const geminiData = await fetchWithFallback(payload);
+        const translated = geminiData?.candidates?.[0]?.content?.parts?.[0]?.text?.trim();
+        if (translated && textEl) {
+            textEl.innerText = translated;
+        } else if (textEl) {
+            textEl.innerText = "ترجمه دریافت نشد. لطفاً مجدداً تلاش کنید.";
+        }
+    } catch (err) {
+        console.error("Translation error:", err);
+        if (textEl) {
+            textEl.innerText = "خطا در ارتباط با هوش مصنوعی برای ترجمه. لطفاً اتصال اینترنت یا کلید API را بررسی فرمایید.";
+        }
+    }
+}
+
+function copyPersianPromptTranslation() {
+    const textEl = document.getElementById('persianTranslationText');
+    const text = textEl ? textEl.innerText.trim() : "";
+    if (text && !text.startsWith("در حال") && !text.startsWith("خطا")) {
+        navigator.clipboard.writeText(text).then(() => {
+            alert("✅ ترجمه فارسی پرامپت در کلیپ‌بورد کپی شد.");
+        });
+    } else {
+        alert("متن ترجمه‌ای برای کپی وجود ندارد.");
+    }
+}
+
+function copyTextDirectly(encodedStr) {
+    const text = decodeURIComponent(encodedStr);
+    navigator.clipboard.writeText(text).then(() => {
+        alert("✅ متن با موفقیت در کلیپ‌بورد کپی شد.");
+    }).catch(err => {
+        console.error("خطا در کپی کلیپ‌بورد:", err);
+    });
+}
+
+function copyActiveImagePrompt() {
+    const activeBox = document.getElementById('activeImagePromptBox');
+    const text = activeBox ? activeBox.innerText.trim() : "";
+    if (text && !text.includes("Click \"🔄 ساخت پرامپت\"")) {
+        navigator.clipboard.writeText(text).then(() => {
+            alert("✅ پرامپت فعال با موفقیت در کلیپ‌بورد کپی شد.");
+        });
+    } else {
+        alert("پرامپتی برای کپی موجود نیست! ابتدا دکمه «🔄 ساخت پرامپت» را بزنید.");
+    }
+}
+
+function copyNegativePrompt() {
+    const negBox = document.getElementById('universalNegativePromptBox');
+    const text = negBox ? negBox.innerText.trim() : (currentGeneratedImagePrompts.negative || "");
+    if (text) {
+        navigator.clipboard.writeText(text).then(() => {
+            alert("✅ پرامپت منفی همگانی در کلیپ‌بورد کپی شد.");
+        });
+    }
+}
+
+function copyActivePromptAndOpenGemini() {
+    const activeBox = document.getElementById('activeImagePromptBox');
+    const text = activeBox ? activeBox.innerText.trim() : "";
+    if (text && !text.includes("Click \"🔄 ساخت پرامپت\"")) {
+        navigator.clipboard.writeText(text).then(() => {
+            window.open('https://gemini.google.com/', '_blank');
+        });
     } else {
         alert("پرامپتی برای کپی موجود نیست!");
     }
 }
 
-function openBingImageCreator() {
-    const promptText = document.getElementById('outImagePrompt').innerText;
-    if (promptText && !promptText.includes("منتظر اجرا...")) {
-        navigator.clipboard.writeText(promptText);
-        window.open('https://www.bing.com/create', '_blank');
+function copyActivePromptAndOpenBing() {
+    const activeBox = document.getElementById('activeImagePromptBox');
+    const text = activeBox ? activeBox.innerText.trim() : "";
+    if (text && !text.includes("Click \"🔄 ساخت پرامپت\"")) {
+        navigator.clipboard.writeText(text).then(() => {
+            window.open('https://www.bing.com/create', '_blank');
+        });
     } else {
         alert("پرامپتی برای کپی موجود نیست!");
     }
 }
 
-function openChatGPTImage() {
-    const promptText = document.getElementById('outImagePrompt').innerText;
-    if (promptText && !promptText.includes("منتظر اجرا...")) {
-        navigator.clipboard.writeText(promptText);
-        window.open('https://chatgpt.com/', '_blank');
+function copyActivePromptAndOpenChatGPT() {
+    const activeBox = document.getElementById('activeImagePromptBox');
+    const text = activeBox ? activeBox.innerText.trim() : "";
+    if (text && !text.includes("Click \"🔄 ساخت پرامپت\"")) {
+        navigator.clipboard.writeText(text).then(() => {
+            window.open('https://chatgpt.com/', '_blank');
+        });
     } else {
         alert("پرامپتی برای کپی موجود نیست!");
     }
