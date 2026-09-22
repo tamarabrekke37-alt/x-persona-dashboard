@@ -969,7 +969,6 @@
                 <div style="display:flex; gap:4px; flex-wrap: wrap;">
                     <button class="btn-single-run" onclick="runSingle('image_prompt', false)">🔄 ساخت پرامپت</button>
                     <button class="btn-rewrite" onclick="runSingle('image_prompt', true)">✍️ بازنویسی</button>
-                    <button class="btn-copy" onclick="copyActiveImagePrompt()">📋 کپی پرامپت فعال</button>
                 </div>
             </div>
 
@@ -1053,10 +1052,7 @@
             </div>
 
             <!-- دکمه‌های اقدام سریع در یک ردیف منظم و مدرن -->
-            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 10px; border-top: 1px solid #1e293b; padding-top: 12px;">
-                <button class="btn-copy" style="padding: 9px 14px; font-size: 0.8rem; font-weight: bold; justify-content: center; display: flex; align-items: center; gap: 6px; background: #0f766e; color: white;" onclick="translateActivePromptToPersian()">
-                    🌐 ترجمه به فارسی
-                </button>
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 10px; border-top: 1px solid #1e293b; padding-top: 12px;">
                 <button class="btn-external-ai" style="padding: 9px 14px; font-size: 0.8rem; justify-content: center; display: flex; align-items: center; gap: 6px;" onclick="copyActivePromptAndOpenGemini()">
                     ✨ پرامپت فعال + Gemini
                 </button>
@@ -3019,6 +3015,49 @@ function resetAllOutputs() {
     
     initCanvasEmpty();
     document.getElementById('imageStatus').innerText = "تصویر پس‌زمینه را بارگذاری کنید:";
+
+    // ریست کامل بخش سامانه یکپارچه پرامپت تصویر و بازنشانی متغیرها و انتخابگرها
+    currentGeneratedImagePrompts = {
+        reasoning: "",
+        recommended: "",
+        dramatic: "",
+        viral_poster: "",
+        negative: "blurry, deformed, cartoonish, oversaturated, low quality, duplicate, extra limbs, watermark, text artifact, distorted perspective"
+    };
+
+    const activeBox = document.getElementById('activeImagePromptBox');
+    if (activeBox) {
+        activeBox.innerText = 'Click "🔄 ساخت پرامپت" or "⚡ اجرای سراسری" to generate a single-image prompt with active persona inheritance.';
+    }
+
+    const visualSelect = document.getElementById('imageVisualSelect');
+    if (visualSelect) visualSelect.value = "recommended";
+
+    const ratioSelect = document.getElementById('imageAspectRatioSelect');
+    if (ratioSelect) ratioSelect.value = "16:9";
+
+    const intensitySelect = document.getElementById('imageIntensitySelect');
+    if (intensitySelect) intensitySelect.value = "balanced";
+
+    const titleBadge = document.getElementById('activePromptTitleBadge');
+    if (titleBadge) titleBadge.innerText = "پرامپت انگلیسی فعال: ✅ سبک پیشنهادی پرسونا";
+
+    const paramsBadge = document.getElementById('activePromptParamsBadge');
+    if (paramsBadge) paramsBadge.innerText = "16:9 | Balanced";
+
+    const reasoningEl = document.getElementById('imageReasoningContent');
+    if (reasoningEl) {
+        reasoningEl.innerText = "پس از اجرای تولید، تحلیل تخصصی علت انتخاب سبک متناسب با پرسونا و سوژه خبر در این بخش قرار می‌گیرد.";
+    }
+
+    const reasoningDetails = document.getElementById('imageReasoningDetails');
+    if (reasoningDetails) reasoningDetails.open = false;
+
+    const transContainer = document.getElementById('persianTranslationContainer');
+    if (transContainer) transContainer.style.display = 'none';
+
+    const transText = document.getElementById('persianTranslationText');
+    if (transText) transText.innerText = "در حال بارگذاری ترجمه...";
 }
 
 function copyText(str) {
@@ -3876,13 +3915,17 @@ function onImagePromptOptionChanged() {
         finalPrompt += `, ${intensityPhrase}`;
     }
 
-    // ادغام مستقیم متن متنواره بوم در صورت وجود (Seamless Overlay Text Integration)
+    // ادغام مستقیم متن متنواره بوم در صورت وجود (Seamless Single Overlay Text Integration)
     const currentOverlayText = document.getElementById('customOverlayInput')?.value?.trim() || currentTopOverlayText?.trim() || "";
+    
+    // پاک‌سازی کامل هرگونه عبارت قبلی متنواره از پرامپت جهت جلوگیری قطعی از تکرار چندباره
+    finalPrompt = finalPrompt.replace(/,?\s*featuring\s+the\s+(?:clear,?\s*elegant\s*)?title\s*text\s*["“”'][^"“”']+["“”']\s*(?:in\s+clean,?\s*readable\s*(?:modern\s*)?typography)?/gi, '').trim();
+    finalPrompt = finalPrompt.replace(/,?\s*featuring\s+the\s+text\s*["“”'][^"“”']+["“”']\s*(?:in\s+clean,?\s*readable\s*(?:modern\s*)?typography)?/gi, '').trim();
+    finalPrompt = finalPrompt.replace(/,\s*,+/g, ',').replace(/^,\s*/, '').replace(/,\s*$/, '').trim();
+
     if (currentOverlayText) {
         const overlayPhrase = `featuring the clear, elegant title text "${currentOverlayText}" in clean, readable modern typography`;
-        if (!finalPrompt.includes(`"${currentOverlayText}"`)) {
-            finalPrompt += `, ${overlayPhrase}`;
-        }
+        finalPrompt += `, ${overlayPhrase}`;
     }
 
     // به‌روزرسانی باکس تک پرامپت فعال
