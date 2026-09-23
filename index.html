@@ -334,6 +334,467 @@
         input[type=range]::-webkit-slider-thumb { -webkit-appearance: none; appearance: none; width: 16px; height: 16px; border-radius: 50%; background: #38bdf8; cursor: pointer; border: 2px solid #0f172a; box-shadow: 0 0 4px rgba(0,0,0,0.5); }
         #accRiskLevel::-webkit-slider-thumb { background: #ef4444 !important; }
         #accCertaintyLevel::-webkit-slider-thumb { background: #10b981 !important; }
+
+        /* ========================================================================== */
+        /* LIGHT MODE STYLES: Persona Management Panel (Character Settings)          */
+        /* Strictly scoped to: body.light-mode, .light-theme, [data-theme="light"]   */
+        /* Dark Mode is the untouched base style and remains 100% intact             */
+        /* ========================================================================== */
+
+        /* 1. Main Persona Panel Container */
+        body.light-mode .account-manager-panel,
+        .light-theme .account-manager-panel,
+        [data-theme="light"] .account-manager-panel {
+            background: #ffffff !important;
+            border: 1px solid #e2e8f0 !important;
+            color: #0f172a !important;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05) !important;
+        }
+
+        /* Header titles & labels in Persona Panel */
+        body.light-mode .account-manager-panel .persona-panel-title,
+        .light-theme .account-manager-panel .persona-panel-title,
+        [data-theme="light"] .account-manager-panel .persona-panel-title,
+        body.light-mode .account-manager-panel > div:first-child span[style*="#38bdf8"],
+        .light-theme .account-manager-panel > div:first-child span[style*="#38bdf8"],
+        [data-theme="light"] .account-manager-panel > div:first-child span[style*="#38bdf8"] {
+            color: #0369a1 !important;
+        }
+
+        /* 2. Account Tabs & Top Action Buttons */
+        body.light-mode #accountTabs button,
+        .light-theme #accountTabs button,
+        [data-theme="light"] #accountTabs button,
+        body.light-mode .acc-btn,
+        .light-theme .acc-btn,
+        [data-theme="light"] .acc-btn {
+            background-color: #f1f5f9 !important;
+            border-color: #cbd5e1 !important;
+            color: #334155 !important;
+        }
+
+        body.light-mode #accountTabs button:hover,
+        .light-theme #accountTabs button:hover,
+        [data-theme="light"] #accountTabs button:hover,
+        body.light-mode .acc-btn:hover,
+        .light-theme .acc-btn:hover,
+        [data-theme="light"] .acc-btn:hover {
+            background-color: #e2e8f0 !important;
+            color: #0f172a !important;
+        }
+
+        body.light-mode #accountTabs button.active,
+        .light-theme #accountTabs button.active,
+        [data-theme="light"] #accountTabs button.active,
+        body.light-mode .acc-btn.active,
+        .light-theme .acc-btn.active,
+        [data-theme="light"] .acc-btn.active,
+        body.light-mode #accountTabs button[style*="border: 2px"],
+        .light-theme #accountTabs button[style*="border: 2px"],
+        [data-theme="light"] #accountTabs button[style*="border: 2px"] {
+            background-color: #0284c7 !important;
+            border-color: #0284c7 !important;
+            color: #ffffff !important;
+            font-weight: bold !important;
+        }
+
+        body.light-mode .account-manager-panel button[onclick="toggleEditPanel()"],
+        .light-theme .account-manager-panel button[onclick="toggleEditPanel()"],
+        [data-theme="light"] .account-manager-panel button[onclick="toggleEditPanel()"] {
+            background: #f1f5f9 !important;
+            border: 1px solid #cbd5e1 !important;
+            color: #1e293b !important;
+        }
+
+        body.light-mode .account-manager-panel button[onclick="toggleEditPanel()"]:hover,
+        .light-theme .account-manager-panel button[onclick="toggleEditPanel()"]:hover,
+        [data-theme="light"] .account-manager-panel button[onclick="toggleEditPanel()"]:hover {
+            background: #e2e8f0 !important;
+            color: #0f172a !important;
+        }
+
+        body.light-mode .account-manager-panel button[onclick="deleteCurrentAccount()"],
+        .light-theme .account-manager-panel button[onclick="deleteCurrentAccount()"],
+        [data-theme="light"] .account-manager-panel button[onclick="deleteCurrentAccount()"] {
+            background: #fee2e2 !important;
+            border: 1px solid #fca5a5 !important;
+            color: #991b1b !important;
+        }
+
+        body.light-mode .account-manager-panel button[onclick="deleteCurrentAccount()"]:hover,
+        .light-theme .account-manager-panel button[onclick="deleteCurrentAccount()"]:hover,
+        [data-theme="light"] .account-manager-panel button[onclick="deleteCurrentAccount()"]:hover {
+            background: #fecaca !important;
+        }
+
+        /* 3. Collapsible Edit Panel (#editPanel) */
+        body.light-mode #editPanel,
+        .light-theme #editPanel,
+        [data-theme="light"] #editPanel {
+            background: #f8fafc !important;
+            border: 1px solid #e2e8f0 !important;
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.05) !important;
+        }
+
+        body.light-mode #editPanel > div:first-child,
+        .light-theme #editPanel > div:first-child,
+        [data-theme="light"] #editPanel > div:first-child {
+            border-bottom-color: #e2e8f0 !important;
+        }
+
+        body.light-mode #editPanel .persona-edit-title,
+        .light-theme #editPanel .persona-edit-title,
+        [data-theme="light"] #editPanel .persona-edit-title,
+        body.light-mode #editPanel span[style*="#f8fafc"],
+        .light-theme #editPanel span[style*="#f8fafc"],
+        [data-theme="light"] #editPanel span[style*="#f8fafc"] {
+            color: #0f172a !important;
+        }
+
+        body.light-mode #editPanel .persona-subtitle,
+        .light-theme #editPanel .persona-subtitle,
+        [data-theme="light"] #editPanel .persona-subtitle,
+        body.light-mode #editPanel span[style*="#94a3b8"],
+        .light-theme #editPanel span[style*="#94a3b8"],
+        [data-theme="light"] #editPanel span[style*="#94a3b8"] {
+            color: #64748b !important;
+        }
+
+        body.light-mode #personaQualityScore,
+        .light-theme #personaQualityScore,
+        [data-theme="light"] #personaQualityScore {
+            background: rgba(2, 132, 199, 0.08) !important;
+            border-color: #7dd3fc !important;
+            color: #0369a1 !important;
+        }
+
+        /* 4. Twitter Profile Analyzer Card */
+        body.light-mode .persona-analyzer-card,
+        .light-theme .persona-analyzer-card,
+        [data-theme="light"] .persona-analyzer-card,
+        body.light-mode #editPanel > div[style*="linear-gradient"],
+        .light-theme #editPanel > div[style*="linear-gradient"],
+        [data-theme="light"] #editPanel > div[style*="linear-gradient"] {
+            background: linear-gradient(135deg, #f0f7ff 0%, #ffffff 100%) !important;
+            border: 1px solid #bfdbfe !important;
+            box-shadow: 0 4px 16px rgba(59, 130, 246, 0.08) !important;
+        }
+
+        body.light-mode .persona-analyzer-card > div:first-child,
+        .light-theme .persona-analyzer-card > div:first-child,
+        [data-theme="light"] .persona-analyzer-card > div:first-child,
+        body.light-mode #editPanel > div[style*="linear-gradient"] > div:first-child,
+        .light-theme #editPanel > div[style*="linear-gradient"] > div:first-child,
+        [data-theme="light"] #editPanel > div[style*="linear-gradient"] > div:first-child {
+            border-bottom-color: #dbeafe !important;
+        }
+
+        body.light-mode .persona-analyzer-title,
+        .light-theme .persona-analyzer-title,
+        [data-theme="light"] .persona-analyzer-title,
+        body.light-mode #editPanel span[style*="#a5b4fc"],
+        .light-theme #editPanel span[style*="#a5b4fc"],
+        [data-theme="light"] #editPanel span[style*="#a5b4fc"] {
+            color: #1d4ed8 !important;
+        }
+
+        body.light-mode .account-manager-panel button[onclick*="resetPersonaFormInputs"],
+        .light-theme .account-manager-panel button[onclick*="resetPersonaFormInputs"],
+        [data-theme="light"] .account-manager-panel button[onclick*="resetPersonaFormInputs"] {
+            background: #f1f5f9 !important;
+            border: 1px solid #cbd5e1 !important;
+            color: #475569 !important;
+        }
+
+        body.light-mode .account-manager-panel button[onclick*="resetPersonaFormInputs"]:hover,
+        .light-theme .account-manager-panel button[onclick*="resetPersonaFormInputs"]:hover,
+        [data-theme="light"] .account-manager-panel button[onclick*="resetPersonaFormInputs"]:hover {
+            background: #e2e8f0 !important;
+            color: #0f172a !important;
+        }
+
+        body.light-mode .persona-screenshot-box,
+        .light-theme .persona-screenshot-box,
+        [data-theme="light"] .persona-screenshot-box,
+        body.light-mode #editPanel div[style*="rgba(15, 23, 42, 0.6)"],
+        .light-theme #editPanel div[style*="rgba(15, 23, 42, 0.6)"],
+        [data-theme="light"] #editPanel div[style*="rgba(15, 23, 42, 0.6)"] {
+            background: #f8fafc !important;
+            border: 1px dashed #93c5fd !important;
+        }
+
+        body.light-mode #editPanel label[for="accScreenshotInput"],
+        .light-theme #editPanel label[for="accScreenshotInput"],
+        [data-theme="light"] #editPanel label[for="accScreenshotInput"] {
+            color: #0284c7 !important;
+        }
+
+        body.light-mode #accScreenshotInput,
+        .light-theme #accScreenshotInput,
+        [data-theme="light"] #accScreenshotInput {
+            color: #334155 !important;
+        }
+
+        body.light-mode #accScreenshotPreview,
+        .light-theme #accScreenshotPreview,
+        [data-theme="light"] #accScreenshotPreview {
+            border-color: #cbd5e1 !important;
+        }
+
+        body.light-mode #loadingStatus,
+        .light-theme #loadingStatus,
+        [data-theme="light"] #loadingStatus {
+            background: #e0f2fe !important;
+            border-color: #7dd3fc !important;
+            color: #0369a1 !important;
+            box-shadow: none !important;
+        }
+
+        body.light-mode #accAnalysisErrorBanner,
+        .light-theme #accAnalysisErrorBanner,
+        [data-theme="light"] #accAnalysisErrorBanner {
+            background: #fee2e2 !important;
+            border-color: #f87171 !important;
+            color: #991b1b !important;
+        }
+
+        body.light-mode .persona-preset-divider,
+        .light-theme .persona-preset-divider,
+        [data-theme="light"] .persona-preset-divider,
+        body.light-mode #editPanel div[style*="rgba(99, 102, 241, 0.25)"],
+        .light-theme #editPanel div[style*="rgba(99, 102, 241, 0.25)"],
+        [data-theme="light"] #editPanel div[style*="rgba(99, 102, 241, 0.25)"] {
+            border-top-color: #e2e8f0 !important;
+        }
+
+        /* 5. Primary Section (8 Foundational Fields) */
+        body.light-mode .persona-primary-card,
+        .light-theme .persona-primary-card,
+        [data-theme="light"] .persona-primary-card,
+        body.light-mode #editPanel > div[style*="#111827"],
+        .light-theme #editPanel > div[style*="#111827"],
+        [data-theme="light"] #editPanel > div[style*="#111827"] {
+            background: #ffffff !important;
+            border: 1px solid #e2e8f0 !important;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.03) !important;
+        }
+
+        body.light-mode .persona-primary-card > div:first-child,
+        .light-theme .persona-primary-card > div:first-child,
+        [data-theme="light"] .persona-primary-card > div:first-child,
+        body.light-mode #editPanel > div[style*="#111827"] > div:first-child,
+        .light-theme #editPanel > div[style*="#111827"] > div:first-child,
+        [data-theme="light"] #editPanel > div[style*="#111827"] > div:first-child {
+            border-bottom-color: #e2e8f0 !important;
+        }
+
+        body.light-mode .persona-primary-title,
+        .light-theme .persona-primary-title,
+        [data-theme="light"] .persona-primary-title,
+        body.light-mode #editPanel h4[style*="#f8fafc"],
+        .light-theme #editPanel h4[style*="#f8fafc"],
+        [data-theme="light"] #editPanel h4[style*="#f8fafc"] {
+            color: #0f172a !important;
+        }
+
+        /* 6. Advanced Section (#accAdvancedDetails) */
+        body.light-mode #accAdvancedDetails,
+        .light-theme #accAdvancedDetails,
+        [data-theme="light"] #accAdvancedDetails {
+            background: #ffffff !important;
+            border: 1px solid #bfdbfe !important;
+            box-shadow: 0 2px 8px rgba(30, 58, 138, 0.04) !important;
+        }
+
+        body.light-mode #accAdvancedDetails summary,
+        .light-theme #accAdvancedDetails summary,
+        [data-theme="light"] #accAdvancedDetails summary {
+            color: #1d4ed8 !important;
+        }
+
+        body.light-mode #accAdvancedDetails > div,
+        .light-theme #accAdvancedDetails > div,
+        [data-theme="light"] #accAdvancedDetails > div {
+            border-top-color: #e2e8f0 !important;
+        }
+
+        body.light-mode .persona-visual-tone-box,
+        .light-theme .persona-visual-tone-box,
+        [data-theme="light"] .persona-visual-tone-box,
+        body.light-mode #accAdvancedDetails div[style*="#0c1527"],
+        .light-theme #accAdvancedDetails div[style*="#0c1527"],
+        [data-theme="light"] #accAdvancedDetails div[style*="#0c1527"] {
+            background: #f0f9ff !important;
+            border: 1px solid #bae6fd !important;
+        }
+
+        body.light-mode #accAdvancedDetails label[for="accVisualTone"],
+        .light-theme #accAdvancedDetails label[for="accVisualTone"],
+        [data-theme="light"] #accAdvancedDetails label[for="accVisualTone"] {
+            color: #0284c7 !important;
+        }
+
+        body.light-mode .persona-user-notes-box,
+        .light-theme .persona-user-notes-box,
+        [data-theme="light"] .persona-user-notes-box,
+        body.light-mode #accAdvancedDetails div[style*="#020617"],
+        .light-theme #accAdvancedDetails div[style*="#020617"],
+        [data-theme="light"] #accAdvancedDetails div[style*="#020617"] {
+            background: #eff6ff !important;
+            border: 1px solid #bfdbfe !important;
+        }
+
+        body.light-mode #accAdvancedDetails label[for="accUserNotes"],
+        .light-theme #accAdvancedDetails label[for="accUserNotes"],
+        [data-theme="light"] #accAdvancedDetails label[for="accUserNotes"] {
+            color: #1d4ed8 !important;
+        }
+
+        /* 7. Form Inputs, Textareas, Selects & Sliders in Persona Panel */
+        body.light-mode .account-manager-panel label,
+        .light-theme .account-manager-panel label,
+        [data-theme="light"] .account-manager-panel label {
+            color: #1e293b !important;
+        }
+
+        body.light-mode .account-manager-panel input[type="text"],
+        .light-theme .account-manager-panel input[type="text"],
+        [data-theme="light"] .account-manager-panel input[type="text"],
+        body.light-mode .account-manager-panel textarea,
+        .light-theme .account-manager-panel textarea,
+        [data-theme="light"] .account-manager-panel textarea,
+        body.light-mode .account-manager-panel select,
+        .light-theme .account-manager-panel select,
+        [data-theme="light"] .account-manager-panel select {
+            background: #ffffff !important;
+            border: 1px solid #cbd5e1 !important;
+            color: #0f172a !important;
+        }
+
+        body.light-mode .account-manager-panel input[type="text"]:focus,
+        .light-theme .account-manager-panel input[type="text"]:focus,
+        [data-theme="light"] .account-manager-panel input[type="text"]:focus,
+        body.light-mode .account-manager-panel textarea:focus,
+        .light-theme .account-manager-panel textarea:focus,
+        [data-theme="light"] .account-manager-panel textarea:focus,
+        body.light-mode .account-manager-panel select:focus,
+        .light-theme .account-manager-panel select:focus,
+        [data-theme="light"] .account-manager-panel select:focus {
+            border-color: #3b82f6 !important;
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15) !important;
+            outline: none !important;
+        }
+
+        body.light-mode .account-manager-panel input::placeholder,
+        .light-theme .account-manager-panel input::placeholder,
+        [data-theme="light"] .account-manager-panel input::placeholder,
+        body.light-mode .account-manager-panel textarea::placeholder,
+        .light-theme .account-manager-panel textarea::placeholder,
+        [data-theme="light"] .account-manager-panel textarea::placeholder {
+            color: #94a3b8 !important;
+            opacity: 1;
+        }
+
+        body.light-mode #accUsernameInput,
+        .light-theme #accUsernameInput,
+        [data-theme="light"] #accUsernameInput {
+            border-color: #818cf8 !important;
+        }
+
+        body.light-mode #accProfileRawText,
+        .light-theme #accProfileRawText,
+        [data-theme="light"] #accProfileRawText,
+        body.light-mode #accPresetSelect,
+        .light-theme #accPresetSelect,
+        [data-theme="light"] #accPresetSelect {
+            border-color: #c7d2fe !important;
+        }
+
+        body.light-mode #accVisualTone,
+        .light-theme #accVisualTone,
+        [data-theme="light"] #accVisualTone {
+            border-color: #7dd3fc !important;
+        }
+
+        body.light-mode #accUserNotes,
+        .light-theme #accUserNotes,
+        [data-theme="light"] #accUserNotes {
+            border-color: #93c5fd !important;
+        }
+
+        body.light-mode .account-manager-panel input[type=range],
+        .light-theme .account-manager-panel input[type=range],
+        [data-theme="light"] .account-manager-panel input[type=range] {
+            background: #e2e8f0 !important;
+        }
+
+        body.light-mode .account-manager-panel input[type=range]::-webkit-slider-thumb,
+        .light-theme .account-manager-panel input[type=range]::-webkit-slider-thumb,
+        [data-theme="light"] .account-manager-panel input[type=range]::-webkit-slider-thumb {
+            border: 2px solid #ffffff !important;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.25) !important;
+        }
+
+        body.light-mode .account-manager-panel div[style*="justify-content: space-between"] span[style*="#64748b"],
+        .light-theme .account-manager-panel div[style*="justify-content: space-between"] span[style*="#64748b"],
+        [data-theme="light"] .account-manager-panel div[style*="justify-content: space-between"] span[style*="#64748b"] {
+            color: #64748b !important;
+        }
+
+        body.light-mode #accExpertiseVal,
+        .light-theme #accExpertiseVal,
+        [data-theme="light"] #accExpertiseVal {
+            color: #0284c7 !important;
+        }
+
+        body.light-mode #accRiskLevelVal,
+        .light-theme #accRiskLevelVal,
+        [data-theme="light"] #accRiskLevelVal {
+            color: #dc2626 !important;
+        }
+
+        body.light-mode #accCertaintyLevelVal,
+        .light-theme #accCertaintyLevelVal,
+        [data-theme="light"] #accCertaintyLevelVal {
+            color: #059669 !important;
+        }
+
+        /* 8. System Instruction Preview in Persona Panel */
+        body.light-mode #jsonPreview,
+        .light-theme #jsonPreview,
+        [data-theme="light"] #jsonPreview {
+            background: #f8fafc !important;
+            border: 1px solid #cbd5e1 !important;
+            color: #15803d !important;
+        }
+
+        body.light-mode #editPanel button[onclick*="copySystemInstruction"],
+        .light-theme #editPanel button[onclick*="copySystemInstruction"],
+        [data-theme="light"] #editPanel button[onclick*="copySystemInstruction"] {
+            background: #f1f5f9 !important;
+            border: 1px solid #cbd5e1 !important;
+            color: #1e293b !important;
+        }
+
+        body.light-mode #editPanel button[onclick*="copySystemInstruction"]:hover,
+        .light-theme #editPanel button[onclick*="copySystemInstruction"]:hover,
+        [data-theme="light"] #editPanel button[onclick*="copySystemInstruction"]:hover {
+            background: #e2e8f0 !important;
+            color: #0f172a !important;
+        }
+
+        /* 9. Side Persona Info in Sidebar */
+        body.light-mode #sidePersonaInfo,
+        .light-theme #sidePersonaInfo,
+        [data-theme="light"] #sidePersonaInfo {
+            color: #334155 !important;
+        }
+
+        body.light-mode #sidePersonaInfo b,
+        .light-theme #sidePersonaInfo b,
+        [data-theme="light"] #sidePersonaInfo b {
+            color: #0f172a !important;
+        }
     </style>
 </head>
 <body>
@@ -398,7 +859,7 @@
 <div class="account-manager-panel">
     <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;">
         <div style="display: flex; align-items: center; gap: 10px;">
-            <span style="font-size: 1.1rem; font-weight: bold; color: #38bdf8;">👤 مدیریت اکانت‌های X:</span>
+            <span class="persona-panel-title" style="font-size: 1.1rem; font-weight: bold; color: #38bdf8;">👤 مدیریت اکانت‌های X:</span>
             <div id="accountTabs" style="display: flex; gap: 6px; flex-wrap: wrap;"></div>
         </div>
         
@@ -414,8 +875,8 @@
         <!-- عنوان پنل مدیریت هویت اکانت و نشانگر جمع‌وجور کیفیت -->
         <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; margin-bottom: 16px; padding-bottom: 12px; border-bottom: 1px solid #1e293b;">
             <div style="display: flex; align-items: center; gap: 10px;">
-                <span style="font-size: 1rem; font-weight: bold; color: #f8fafc;">⚙️ تنظیمات و هویت اکانت (Persona Management)</span>
-                <span style="font-size: 0.78rem; color: #94a3b8;">طراحی پرسونا برای تولید محتوای دقیق و ضد توهم</span>
+                <span class="persona-edit-title" style="font-size: 1rem; font-weight: bold; color: #f8fafc;">⚙️ تنظیمات و هویت اکانت (Persona Management)</span>
+                <span class="persona-subtitle" style="font-size: 0.78rem; color: #94a3b8;">طراحی پرسونا برای تولید محتوای دقیق و ضد توهم</span>
             </div>
             <!-- نشانگر جمع‌وجور کیفیت به جای نوار بزرگ قبلی -->
             <span id="personaQualityScore" style="display: inline-flex; align-items: center; gap: 6px; padding: 5px 14px; border-radius: 20px; font-size: 0.82rem; font-weight: bold; background: rgba(56, 189, 248, 0.1); color: #38bdf8; border: 1px solid #0284c7;">
@@ -424,13 +885,13 @@
         </div>
 
         <!-- بخش یکپارچه اکانت: نام کاربری + متن بیو و توییت‌ها + آپلود اسکرین‌شات + دکمه‌های تحلیل هوشمند و ذخیره -->
-        <div style="background: linear-gradient(135deg, #1e1b4b 0%, #0f172a 100%); border: 1px solid #4338ca; padding: 16px; border-radius: 10px; margin-bottom: 16px; box-shadow: 0 4px 16px rgba(67, 56, 202, 0.25);">
+        <div class="persona-analyzer-card" style="background: linear-gradient(135deg, #1e1b4b 0%, #0f172a 100%); border: 1px solid #4338ca; padding: 16px; border-radius: 10px; margin-bottom: 16px; box-shadow: 0 4px 16px rgba(67, 56, 202, 0.25);">
             
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; border-bottom: 1px solid rgba(99, 102, 241, 0.2); padding-bottom: 8px;">
-                <span style="font-weight: bold; color: #a5b4fc; font-size: 0.92rem; display: flex; align-items: center; gap: 6px;">
+                <span class="persona-analyzer-title" style="font-weight: bold; color: #a5b4fc; font-size: 0.92rem; display: flex; align-items: center; gap: 6px;">
                     <span>🔍</span> تحلیل‌گر خودکار پروفایل X (Twitter Profile Analyzer)
                 </span>
-                <span style="font-size: 0.75rem; color: #94a3b8;">استخراج خودکار پرسونای کامل و هویت بصری پایدار</span>
+                <span class="persona-subtitle" style="font-size: 0.75rem; color: #94a3b8;">استخراج خودکار پرسونای کامل و هویت بصری پایدار</span>
             </div>
 
             <!-- ردیف نام کاربری و دکمه‌های اقدام -->
@@ -465,7 +926,7 @@
             </div>
 
             <!-- آپلود اسکرین‌شات از صفحه پروفایل یا پست‌ها جهت تحلیل تصویری و بینایی ماشین (Vision) -->
-            <div style="margin-bottom: 12px; background: rgba(15, 23, 42, 0.6); padding: 10px 14px; border-radius: 8px; border: 1px dashed #6366f1;">
+            <div class="persona-screenshot-box" style="margin-bottom: 12px; background: rgba(15, 23, 42, 0.6); padding: 10px 14px; border-radius: 8px; border: 1px dashed #6366f1;">
                 <label for="accScreenshotInput" style="font-weight: bold; color: #38bdf8; display: block; margin-bottom: 6px; font-size: 0.84rem; cursor: pointer;">
                     📸 ۳. آپلود اسکرین‌شات از پروفایل، توییت‌ها یا صفحه اکانت (جهت تحلیل تصویری Vision AI):
                 </label>
@@ -488,7 +949,7 @@
             <div id="accAnalysisErrorBanner" style="display: none; background: rgba(239, 68, 68, 0.15); border: 1px solid #ef4444; color: #fca5a5; padding: 12px 18px; border-radius: 8px; font-size: 0.88rem; font-weight: bold; margin-bottom: 12px; text-align: center; line-height: 1.6;"></div>
 
             <!-- منوی کشویی انتخاب ۱۰ شخصیت آماده (Presets ده‌گانه فارسی) -->
-            <div style="padding-top: 12px; border-top: 1px solid rgba(99, 102, 241, 0.25);">
+            <div class="persona-preset-divider" style="padding-top: 12px; border-top: 1px solid rgba(99, 102, 241, 0.25);">
                 <label for="accPresetSelect" style="font-size: 0.84rem; color: #cbd5e1; font-weight: bold; display: block; margin-bottom: 6px;">
                     📚 یا انتخاب یک کاراکتر آماده از پیش‌تنظیم‌ها (۱۰ پروفایل پیش‌تنظیم):
                 </label>
@@ -515,12 +976,12 @@
         </div>
 
         <!-- C. PRIMARY SECTION (8 فیلد اصلی با زبان طبیعی و انسانی) -->
-        <div style="background: #111827; border: 1px solid #1f2937; border-radius: 10px; padding: 18px; margin-bottom: 16px;">
+        <div class="persona-primary-card" style="background: #111827; border: 1px solid #1f2937; border-radius: 10px; padding: 18px; margin-bottom: 16px;">
             <div style="display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid #1e293b; padding-bottom: 10px; margin-bottom: 16px;">
-                <h4 style="margin: 0; color: #f8fafc; font-size: 0.95rem; display: flex; align-items: center; gap: 8px;">
+                <h4 class="persona-primary-title" style="margin: 0; color: #f8fafc; font-size: 0.95rem; display: flex; align-items: center; gap: 8px;">
                     <span>👤</span> ارکان هویتی کاراکتر (۸ فیلد پایه و بنیادین)
                 </h4>
-                <span style="font-size: 0.75rem; color: #94a3b8;">شاکله اصلی هویت اکانت برای هدایت هوش مصنوعی</span>
+                <span class="persona-subtitle" style="font-size: 0.75rem; color: #94a3b8;">شاکله اصلی هویت اکانت برای هدایت هوش مصنوعی</span>
             </div>
 
             <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 16px;">
@@ -628,10 +1089,10 @@
         </div>
 
         <!-- D. ADVANCED COLLAPSIBLE SECTION ("⚙️ تنظیمات پیشرفته و نگارش") -->
-        <details id="accAdvancedDetails" style="background: #0b1329; border: 1px solid #1e3a8a; border-radius: 10px; padding: 14px 18px; margin-bottom: 16px; transition: all 0.3s;">
+        <details id="accAdvancedDetails" class="persona-advanced-card" style="background: #0b1329; border: 1px solid #1e3a8a; border-radius: 10px; padding: 14px 18px; margin-bottom: 16px; transition: all 0.3s;">
             <summary style="cursor: pointer; font-weight: bold; color: #60a5fa; font-size: 0.92rem; user-select: none; display: flex; align-items: center; justify-content: space-between;">
                 <span>⚙️ تنظیمات پیشرفته و نگارش (ویژه کاربران حرفه‌ای)</span>
-                <span style="font-size: 0.75rem; color: #94a3b8;">(کلیک برای باز/بسته شدن)</span>
+                <span class="persona-subtitle" style="font-size: 0.75rem; color: #94a3b8;">(کلیک برای باز/بسته شدن)</span>
             </summary>
             
             <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 14px; margin-top: 14px; padding-top: 14px; border-top: 1px solid #1e293b;">
@@ -681,13 +1142,13 @@
                 </div>
 
                 <!-- accVisualTone: هویت بصری و سبک پایدار تصویر اکانت -->
-                <div style="grid-column: 1 / -1; background: #0c1527; padding: 10px 12px; border-radius: 6px; border: 1px solid #1e40af;">
+                <div class="persona-visual-tone-box" style="grid-column: 1 / -1; background: #0c1527; padding: 10px 12px; border-radius: 6px; border: 1px solid #1e40af;">
                     <label for="accVisualTone" style="font-size: 0.84rem; color: #38bdf8; font-weight: bold; display: block; margin-bottom: 4px;">🎨 هویت بصری، سبک عکاسی و ثبات برند اکانت (Visual Tone & Aesthetic Identity):</label>
                     <input type="text" id="accVisualTone" oninput="saveCurrentAccData()" style="width: 100%; padding: 8px 10px; border-radius: 6px; border: 1px solid #0284c7; background: #070d19; color: #e0f2fe; font-size: 0.85rem;" placeholder="مثال: عکس‌های مستند و ژورنالیستی بدون رتوش با لنز ۳۵ میلی‌متری، نور طبیعی خیابان، بافت واقعی و ضد کلیشه استوک">
                 </div>
 
                 <!-- accUserNotes: باورها، اصول ثابت و یادداشت‌های خاص کاربر -->
-                <div style="grid-column: 1 / -1; background: #020617; padding: 12px; border-radius: 6px; border: 1px solid #1e40af;">
+                <div class="persona-user-notes-box" style="grid-column: 1 / -1; background: #020617; padding: 12px; border-radius: 6px; border: 1px solid #1e40af;">
                     <label for="accUserNotes" style="font-size: 0.84rem; color: #60a5fa; font-weight: bold; display: block; margin-bottom: 4px;">📝 باورها، اصول ثابت و یادداشت‌های خاص کاربر (ضد توهم AI):</label>
                     <input type="text" id="accUserNotes" oninput="saveCurrentAccData()" style="width: 100%; padding: 8px 10px; border-radius: 6px; border: 1px solid #1e3a8a; background: #0f172a; color: #fff; font-size: 0.85rem;" placeholder="مثال: این اکانت متعلق به یک دانشجوی حقوق بشر است و اصلاً بیزینسی یا تجاری نیست.">
                 </div>
@@ -1447,6 +1908,19 @@ function setBarColor(barEl, pct) {
 function changeDashboardTheme(bgColor) {
     document.body.style.backgroundColor = bgColor;
     
+    const isLight = (bgColor === '#f8fafc');
+    if (isLight) {
+        document.body.classList.add('light-mode');
+        document.body.classList.add('light-theme');
+        document.body.setAttribute('data-theme', 'light');
+        document.documentElement.setAttribute('data-theme', 'light');
+    } else {
+        document.body.classList.remove('light-mode');
+        document.body.classList.remove('light-theme');
+        document.body.removeAttribute('data-theme');
+        document.documentElement.removeAttribute('data-theme');
+    }
+    
     let cardBg, cardBorder, boxBg, boxBorder, textColor, titleColor;
     
     if (bgColor === '#f8fafc') {
@@ -2042,6 +2516,7 @@ function renderAccountTabs() {
     accounts.forEach(acc => {
         const btn = document.createElement('button');
         const isActive = acc.id === activeAccId;
+        btn.className = 'acc-btn' + (isActive ? ' active' : '');
         btn.innerText = acc.username || "@account";
         btn.style.padding = "6px 14px";
         btn.style.borderRadius = "6px";
