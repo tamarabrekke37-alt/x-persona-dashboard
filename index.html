@@ -413,18 +413,44 @@
             color: #0f172a !important;
         }
 
-        body.light-mode .account-manager-panel button[onclick="deleteCurrentAccount()"],
-        .light-theme .account-manager-panel button[onclick="deleteCurrentAccount()"],
-        [data-theme="light"] .account-manager-panel button[onclick="deleteCurrentAccount()"] {
+        body.light-mode .account-manager-panel button[onclick*="deleteCurrentAccount"],
+        .light-theme .account-manager-panel button[onclick*="deleteCurrentAccount"],
+        [data-theme="light"] .account-manager-panel button[onclick*="deleteCurrentAccount"],
+        body.light-mode #deleteAccountBtn,
+        .light-theme #deleteAccountBtn,
+        [data-theme="light"] #deleteAccountBtn {
             background: #fee2e2 !important;
             border: 1px solid #fca5a5 !important;
             color: #991b1b !important;
         }
 
-        body.light-mode .account-manager-panel button[onclick="deleteCurrentAccount()"]:hover,
-        .light-theme .account-manager-panel button[onclick="deleteCurrentAccount()"]:hover,
-        [data-theme="light"] .account-manager-panel button[onclick="deleteCurrentAccount()"]:hover {
+        body.light-mode .account-manager-panel button[onclick*="deleteCurrentAccount"]:hover,
+        .light-theme .account-manager-panel button[onclick*="deleteCurrentAccount"]:hover,
+        [data-theme="light"] .account-manager-panel button[onclick*="deleteCurrentAccount"]:hover,
+        body.light-mode #deleteAccountBtn:hover,
+        .light-theme #deleteAccountBtn:hover,
+        [data-theme="light"] #deleteAccountBtn:hover {
             background: #fecaca !important;
+        }
+
+        .btn-delete-confirming,
+        body.light-mode #deleteAccountBtn.btn-delete-confirming,
+        .light-theme #deleteAccountBtn.btn-delete-confirming,
+        [data-theme="light"] #deleteAccountBtn.btn-delete-confirming {
+            background: #dc2626 !important;
+            color: #ffffff !important;
+            border: 1px solid #ef4444 !important;
+            box-shadow: 0 0 10px rgba(220, 38, 38, 0.4) !important;
+        }
+
+        .btn-delete-warning,
+        body.light-mode #deleteAccountBtn.btn-delete-warning,
+        .light-theme #deleteAccountBtn.btn-delete-warning,
+        [data-theme="light"] #deleteAccountBtn.btn-delete-warning {
+            background: #d97706 !important;
+            color: #ffffff !important;
+            border: 1px solid #f59e0b !important;
+            box-shadow: 0 0 10px rgba(217, 119, 6, 0.35) !important;
         }
 
         /* 3. Collapsible Edit Panel (#editPanel) */
@@ -866,7 +892,7 @@
         <div style="display: flex; gap: 8px;">
             <button onclick="addNewAccount()" style="background: #0369a1; color: white; border: none; padding: 6px 12px; border-radius: 6px; cursor: pointer; font-size: 0.85rem; font-weight: bold;">➕ اکانت جدید</button>
             <button onclick="toggleEditPanel()" style="background: #334155; color: white; border: none; padding: 6px 12px; border-radius: 6px; cursor: pointer; font-size: 0.85rem;">⚙️ تنظیمات کاراکتر</button>
-            <button onclick="deleteCurrentAccount()" style="background: #991b1b; color: white; border: none; padding: 6px 12px; border-radius: 6px; cursor: pointer; font-size: 0.85rem;">🗑️ حذف اکانت</button>
+            <button id="deleteAccountBtn" onclick="deleteCurrentAccount(this)" style="background: #991b1b; color: white; border: none; padding: 6px 12px; border-radius: 6px; cursor: pointer; font-size: 0.85rem; transition: all 0.2s;">🗑️ حذف اکانت</button>
         </div>
     </div>
 
@@ -2625,8 +2651,24 @@ function handleUsernameChange(newVal) {
     }
 }
 
+function resetDeleteAccountBtnState() {
+    const btn = document.getElementById('deleteAccountBtn') || document.querySelector('button[onclick*="deleteCurrentAccount"]');
+    if (btn) {
+        if (typeof deleteAccountConfirmTimer !== 'undefined' && deleteAccountConfirmTimer) {
+            clearTimeout(deleteAccountConfirmTimer);
+            deleteAccountConfirmTimer = null;
+        }
+        btn.removeAttribute('data-pending-confirm');
+        btn.classList.remove('btn-delete-confirming');
+        btn.classList.remove('btn-delete-warning');
+        const orig = btn.getAttribute('data-orig-text') || '🗑️ حذف اکانت';
+        btn.innerText = orig;
+    }
+}
+
 function switchAccount(id) {
     clearAccountScreenshot();
+    resetDeleteAccountBtnState();
     activeAccId = id;
     renderAccountTabs();
 }
@@ -2798,6 +2840,7 @@ function addNewAccount() {
     accounts.push(newAcc);
     activeAccId = newId;
     localStorage.setItem('acc_username_v_final_full', JSON.stringify(accounts));
+    resetDeleteAccountBtnState();
     renderAccountTabs();
 
     const editPanel = document.getElementById('editPanel');
@@ -2813,21 +2856,76 @@ function addNewAccount() {
     }
 }
 
-function deleteCurrentAccount() {
-    if (accounts.length <= 1) {
-        alert("امکان حذف تنها اکانت موجود وجود ندارد.");
+let deleteAccountConfirmTimer = null;
+
+function deleteCurrentAccount(btnElement) {
+    const btn = btnElement || document.getElementById('deleteAccountBtn') || document.querySelector('button[onclick*="deleteCurrentAccount"]');
+
+    if (!accounts || accounts.length <= 1) {
+        if (btn) {
+            if (deleteAccountConfirmTimer) {
+                clearTimeout(deleteAccountConfirmTimer);
+                deleteAccountConfirmTimer = null;
+            }
+            btn.removeAttribute('data-pending-confirm');
+            btn.classList.remove('btn-delete-confirming');
+            btn.classList.add('btn-delete-warning');
+            const orig = btn.getAttribute('data-orig-text') || '🗑️ حذف اکانت';
+            btn.innerText = '⚠️ حداقل ۱ اکانت لازم است';
+            deleteAccountConfirmTimer = setTimeout(() => {
+                btn.classList.remove('btn-delete-warning');
+                btn.innerText = orig;
+                deleteAccountConfirmTimer = null;
+            }, 2500);
+        }
         return;
     }
 
-    const currentAcc = accounts.find(a => a.id === activeAccId);
-    if (!confirm(`آیا از حذف اکانت ${currentAcc?.username || ''} اطمینان دارید؟`)) {
+    if (btn && btn.getAttribute('data-pending-confirm') === 'true') {
+        // Confirmation click: proceed with deletion without blocked window.confirm
+        if (deleteAccountConfirmTimer) {
+            clearTimeout(deleteAccountConfirmTimer);
+            deleteAccountConfirmTimer = null;
+        }
+        btn.removeAttribute('data-pending-confirm');
+        btn.classList.remove('btn-delete-confirming');
+        btn.classList.remove('btn-delete-warning');
+
+        accounts = accounts.filter(a => a.id !== activeAccId);
+        if (accounts.length > 0) {
+            activeAccId = accounts[0].id;
+        }
+        localStorage.setItem('acc_username_v_final_full', JSON.stringify(accounts));
+        renderAccountTabs();
+
+        btn.innerText = '✅ اکانت حذف شد';
+        const orig = btn.getAttribute('data-orig-text') || '🗑️ حذف اکانت';
+        setTimeout(() => {
+            btn.innerText = orig;
+        }, 1800);
         return;
     }
 
-    accounts = accounts.filter(a => a.id !== activeAccId);
-    activeAccId = accounts[0].id;
-    localStorage.setItem('acc_username_v_final_full', JSON.stringify(accounts));
-    renderAccountTabs();
+    // First click: Request confirmation directly on the button
+    if (btn) {
+        if (!btn.getAttribute('data-orig-text')) {
+            btn.setAttribute('data-orig-text', btn.innerText.trim());
+        }
+        btn.setAttribute('data-pending-confirm', 'true');
+        btn.classList.add('btn-delete-confirming');
+        btn.classList.remove('btn-delete-warning');
+        btn.innerText = '⚠️ حذف قطعی؟ (کلیک کنید)';
+
+        if (deleteAccountConfirmTimer) {
+            clearTimeout(deleteAccountConfirmTimer);
+        }
+        deleteAccountConfirmTimer = setTimeout(() => {
+            btn.removeAttribute('data-pending-confirm');
+            btn.classList.remove('btn-delete-confirming');
+            btn.innerText = btn.getAttribute('data-orig-text') || '🗑️ حذف اکانت';
+            deleteAccountConfirmTimer = null;
+        }, 4000);
+    }
 }
 
 function toggleEditPanel() {
