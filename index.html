@@ -485,6 +485,7 @@
             <div id="loadingStatus" style="display: none; background: rgba(14, 165, 233, 0.2); border: 1px solid #0284c7; color: #38bdf8; padding: 12px 18px; border-radius: 8px; font-size: 0.9rem; font-weight: bold; margin-bottom: 12px; text-align: center; box-shadow: 0 4px 12px rgba(2, 132, 199, 0.25);">
                 ⏳ در حال تحلیل خودکار پروفایل X و استخراج هویت پرسونا...
             </div>
+            <div id="accAnalysisErrorBanner" style="display: none; background: rgba(239, 68, 68, 0.15); border: 1px solid #ef4444; color: #fca5a5; padding: 12px 18px; border-radius: 8px; font-size: 0.88rem; font-weight: bold; margin-bottom: 12px; text-align: center; line-height: 1.6;"></div>
 
             <!-- منوی کشویی انتخاب ۱۰ شخصیت آماده (Presets ده‌گانه فارسی) -->
             <div style="padding-top: 12px; border-top: 1px solid rgba(99, 102, 241, 0.25);">
@@ -2770,17 +2771,14 @@ function clearAccountScreenshot() {
 
 async function analyzeAccountWithAI() {
     const statusEl = document.getElementById('loadingStatus');
+    const errorBanner = document.getElementById('accAnalysisErrorBanner');
     const analyzeBtn = document.getElementById('btnAnalyzePersona') || document.querySelector("button[onclick*='analyzeAccountWithAI']") || (window.event ? window.event.target : null);
+    const originalBtnText = analyzeBtn ? analyzeBtn.innerHTML : '🔍 تحلیل خودکار پروفایل X و استخراج کامل پرسونا';
 
-    // 1. نمایش وضعیت بارگذاری برجسته و غیرفعال‌سازی دکمه در حین اجرا
-    if (statusEl) {
-        statusEl.style.display = "block";
-        statusEl.innerText = "⏳ در حال تحلیل و تنظیم هوشمند هویت اکانت...";
-    }
-    if (analyzeBtn) {
-        analyzeBtn.disabled = true;
-        analyzeBtn.style.opacity = "0.65";
-        analyzeBtn.style.cursor = "not-allowed";
+    // مخفی‌سازی بنر خطای قبلی در شروع درخواست جدید
+    if (errorBanner) {
+        errorBanner.style.display = "none";
+        errorBanner.innerText = "";
     }
 
     let rawInput = (document.getElementById('accUsernameInput')?.value || document.getElementById('accUsername')?.value || "").trim();
@@ -2788,21 +2786,32 @@ async function analyzeAccountWithAI() {
     const rawBioText = (document.getElementById('accProfileRawText')?.value || "").trim();
     const hasScreenshot = !!(uploadedAccountScreenshotBase64 && uploadedAccountScreenshotBase64.length > 20);
 
-    // 2. پاک‌سازی و استخراج نام کاربری از ورودی یا لینک کامل X/Twitter
+    // ۱. پاک‌سازی و استخراج نام کاربری و آدرس اینترنتی کامل اکانت در X/Twitter
     let cleanedUsername = rawInput;
-    if (cleanedUsername.includes('x.com/') || cleanedUsername.includes('twitter.com/')) {
+    let fullProfileUrl = "";
+    if (cleanedUsername.startsWith('http://') || cleanedUsername.startsWith('https://')) {
+        fullProfileUrl = cleanedUsername;
         try {
-            const urlObj = new URL(cleanedUsername.startsWith('http') ? cleanedUsername : `https://${cleanedUsername}`);
+            const urlObj = new URL(cleanedUsername);
             const pathParts = urlObj.pathname.split('/').filter(p => p && p.toLowerCase() !== 'status');
             if (pathParts.length > 0) {
                 cleanedUsername = pathParts[0];
             }
-        } catch (e) {
-            const match = cleanedUsername.match(/(?:x\.com|twitter\.com)\/([a-zA-Z0-9_]+)/i);
-            if (match && match[1]) cleanedUsername = match[1];
-        }
+        } catch (e) {}
+    } else if (cleanedUsername.includes('x.com/') || cleanedUsername.includes('twitter.com/')) {
+        try {
+            const urlObj = new URL(`https://${cleanedUsername}`);
+            const pathParts = urlObj.pathname.split('/').filter(p => p && p.toLowerCase() !== 'status');
+            if (pathParts.length > 0) {
+                cleanedUsername = pathParts[0];
+            }
+        } catch (e) {}
     }
+
     cleanedUsername = cleanedUsername.replace(/^@+/, '').split('?')[0].split('#')[0].replace(/\/+$/, '').trim();
+    if (cleanedUsername && !fullProfileUrl) {
+        fullProfileUrl = `https://x.com/${cleanedUsername}`;
+    }
 
     if (cleanedUsername) {
         const uVal = `@${cleanedUsername}`;
@@ -2810,23 +2819,18 @@ async function analyzeAccountWithAI() {
         if (document.getElementById('accUsername')) document.getElementById('accUsername').value = uVal;
     }
 
-    const showNoHallucinationNotice = () => {
-        alert("خطا در استخراج اطلاعات. لطفاً اسکرینشات پروفایل یا چند خط بیو را وارد کنید.");
-    };
-
-    // بررسی خالی نبودن همه ورودی‌ها (نام کاربری، توضیحات دستی، بیو متنی، اسکرین‌شات)
+    // اعتبارسنجی ورودی کاربر
     if (!cleanedUsername && !userNotes && !rawBioText && !hasScreenshot) {
-        alert("لطفاً نام کاربری، لینک اکانت X، متن بیو/توییت‌ها، توضیحات دستی یا اسکرین‌شات پروفایل را وارد کنید.");
-        if (statusEl) statusEl.style.display = "none";
-        if (analyzeBtn) {
-            analyzeBtn.disabled = false;
-            analyzeBtn.style.opacity = "1";
-            analyzeBtn.style.cursor = "pointer";
+        const msg = "لطفاً نام کاربری (@username) یا آدرس صفحه پروفایل در X (مانند https://x.com/username) را وارد کنید.";
+        if (errorBanner) {
+            errorBanner.innerText = `⚠️ ${msg}`;
+            errorBanner.style.display = "block";
         }
+        alert(msg);
         return;
     }
 
-    // 3. دریافت کلید فعال انتخاب‌شده در #apiSelect
+    // بررسی کلید فعال API
     const apiSelect = document.getElementById('apiSelect');
     if (apiSelect && apiSelect.value !== "") {
         const selIdx = parseInt(apiSelect.value);
@@ -2838,116 +2842,87 @@ async function analyzeAccountWithAI() {
     const hasValidKey = apiKey && apiKey !== "YOUR_API_KEY_HERE" && apiKey.trim().length > 5;
 
     if (!hasValidKey) {
-        alert("⚠️ لطفاً ابتدا یک API Key معتبر Gemini در پنل بالا وارد یا انتخاب کنید.");
-        if (statusEl) statusEl.style.display = "none";
-        if (analyzeBtn) {
-            analyzeBtn.disabled = false;
-            analyzeBtn.style.opacity = "1";
-            analyzeBtn.style.cursor = "pointer";
+        const keyMsg = "لطفاً ابتدا یک API Key معتبر Gemini در پنل بالا وارد یا انتخاب کنید.";
+        if (errorBanner) {
+            errorBanner.innerText = `⚠️ ${keyMsg}`;
+            errorBanner.style.display = "block";
         }
+        alert(`⚠️ ${keyMsg}`);
         return;
     }
 
-    // 4. اجرای گاردریل و استخراج داده‌ها
+    // ۲. نمایش حالت بارگذاری شفاف و مشخص روی دکمه و باکس وضعیت
+    if (analyzeBtn) {
+        analyzeBtn.disabled = true;
+        analyzeBtn.innerHTML = `<span>⏳</span> در حال جستجوی زنده در X و استخراج مستندات پرسونا...`;
+        analyzeBtn.style.opacity = "0.75";
+        analyzeBtn.style.cursor = "wait";
+    }
+    if (statusEl) {
+        statusEl.style.display = "block";
+        statusEl.innerHTML = `🌐 در حال جستجوی اینترنتی، بررسی صفحه عمومی رسمی <b>@${cleanedUsername || 'اکانت'}</b> در پلتفرم X و استخراج هویت پرسونا...`;
+    }
+
     try {
-        let profileText = rawBioText || "";
-        let fetchedOnlineSuccess = false;
+        // ۳. ساخت پرامپت با الزام به عدم توهم و استفاده از ابزار Google Search Grounding
+        let systemPrompt = `تو یک تحلیل‌گر ارشد هویت دیجیتال و معمار پرسونای رسانه‌ای در پلتفرم X (توییتر سابق) هستی.
+ابزار جستجوی گوگل (Google Search Grounding) برای تو فعال است.
 
-        // اگر اسکرین‌شات و متن دستی نبود، تلاش برای واکشی آنلاین
-        if (cleanedUsername && !hasScreenshot && !profileText) {
-            try {
-                const controller = new AbortController();
-                const timeoutId = setTimeout(() => controller.abort(), 4000);
-                const jinaUrl = `https://r.jina.ai/https://x.com/${cleanedUsername}`;
-                const jinaResponse = await fetch(jinaUrl, { signal: controller.signal });
-                clearTimeout(timeoutId);
-                if (jinaResponse.ok) {
-                    const text = await jinaResponse.text();
-                    if (text && text.length > 200 && !text.includes("JavaScript is not available") && !text.includes("Something went wrong")) {
-                        profileText = text;
-                        fetchedOnlineSuccess = true;
-                    }
-                }
-            } catch (e) {
-                console.warn("عدم دسترسی به دریافت وب پروفایل:", e);
-            }
-        }
+🔍 دستور جستجو و واکشی اطلاعات واقعی:
+از ابزار گوگل سرچ برای جستجو و خواندن صفحه رسمی و عمومی اکانت X زیر استفاده کن:
+- نام کاربری اکانت: @${cleanedUsername || 'کاربر'}
+- لینک صفحه رسمی: ${fullProfileUrl || `https://x.com/${cleanedUsername}`}
+- عبارات کلیدی جستجو: site:x.com/${cleanedUsername} OR site:twitter.com/${cleanedUsername}
 
-        // ساخت پرامپت استخراج پرسونا
-        let systemPrompt = "";
-        if (hasScreenshot) {
-            systemPrompt = `تو یک استراتژیست ارشد محتوا، متخصص بینایی ماشین و معمار پرسونا در پلتفرم X (توییتر) هستی.
-وظیفه تو تحلیل تخصصی تصویر پیوست‌شده (اسکرین‌شات صفحه پروفایل یا پست‌های اکانت) و استخراج دقیق مؤلفه‌های شخصیتی و هویت بصری اکانت است.
+${rawBioText ? `[اطلاعات تکمیلی ارائه‌شده توسط کاربر]:\n"${rawBioText}"\n` : ''}
+${userNotes ? `[یادداشت‌های دستی کاربر]:\n"${userNotes}"\n` : ''}
 
-📸 دستورالعمل بینایی ماشین و تحلیل اسکرین‌شات (Vision OCR Instruction):
-- متن بیو، نام کاربری، توییت‌های پین‌شده، لحن، سبک بصری تصاویر و جهت‌گیری موجود در تصویر را به دقت بررسی کن.
-- فیلدهای هویتی اکانت را استخراج کن.
+🛑 ضوابط قطعی و الزامی (Strict Enforcement):
+"Base all extracted persona details ONLY on verified, publicly available information from this specific profile. If certain information (e.g., target audience or posting style) cannot be found in the actual page content, leave those specific fields blank or explicitly state 'اطلاعاتی یافت نشد' instead of guessing or hallucinating."
 
-[شناسه اکانت]: @${cleanedUsername || 'بر اساس تصویر'}
-[متن بیو/توییت‌های پیوست]: "${rawBioText || 'ارائه نشده'}"
-[توضیحات تکمیلی دستی کاربر]: "${userNotes || 'توضیح دستی ندارد'}"
+وظیفه تو استخراج مؤلفه‌های هویتی و پرسونای این اکانت بر اساس فکت‌های مستند و واقعی موجود در صفحه (بیو رسمی، حوزه موضوعی، علایق کلیدی، لحن، توییت‌های اخیر و سبک نگارش) است:
+1. role: عنوان دقیق نقش و کاراکتر اکانت (این فرد کیست و در چه حوزه‌ای فعالیت می‌کند؟ اگر در صفحه یافت نشد: "اطلاعاتی یافت نشد")
+2. goal: مأموریت محتوایی و هدف اصلی اکانت (اگر در صفحه یافت نشد: "اطلاعاتی یافت نشد")
+3. tone: لحن بیان توییت‌های اکانت (یکی از اعداد ۱ تا ۶):
+   1: رسمی و ژورنالیستی
+   2: تحلیلی و منطقی
+   3: مردمی و عامیانه
+   4: احساسی و روایتی
+   5: طنز، کنایی و وایرال
+   6: حقوق بشری و دادخواهی
+4. expertise: سطح دانش و تخصص از ۱ تا ۵ (1=شهروند عادی، 3=فعال/آگاه، 5=پژوهشگر/متخصص)
+5. reasoning: شیوه استدلال در توییت‌ها (دقیقاً یکی از ۳ مورد: ["مبتنی بر آمار و سند", "تجربه شخصی و روایت مردم", "تحلیل سیاسی و منطقی"])
+6. risk: میزان صراحت و رک‌گویی از ۱ تا ۵ (1=محتاط، 3=متعادل، 5=بسیار صریح و بی‌پروا)
+7. keywords: علایق کلیدی، تکه‌کلام‌ها و واژگان تکرارشونده در اکانت (جدا شده با ویرگول. اگر یافت نشد: "اطلاعاتی یافت نشد")
+8. forbidden: خطوط قرمز، موارد پرهیز یا کلمات ممنوعه مشهود (اگر یافت نشد: "اطلاعاتی یافت نشد")
+9. audience: جامعه مخاطبان هدف بر مبنای محتوای صفحه (اگر یافت نشد: "اطلاعاتی یافت نشد")
+10. emotion: بار عاطفی و احساس غالب پیام‌ها و پست‌ها (اگر یافت نشد: "اطلاعاتی یافت نشد")
+11. certaintyLevel: میزان قطعیت در بیان از ۱ تا ۵ (1=احتمالی، 3=مشروط، 5=قاطع)
+12. rules: قواعد ساختاری، نحوه هشتگ‌گذاری، طول جملات یا ایموجی‌ها (اگر یافت نشد: "اطلاعاتی یافت نشد")
+13. angles: زوایای معمول ورود به موضوعات (اگر یافت نشد: "اطلاعاتی یافت نشد")
+14. visualTone: هویت بصری و سبک تصویرسازی متناسب با محتوای این اکانت (مثال: عکاسی مستند، اینفوگرافیک داده‌محور، تصویر مینیمال و معتبر. اگر یافت نشد: "اطلاعاتی یافت نشد")
 
-اگر تصویر ناخوانا یا فاقد اطلاعات لازم برای درک هویت اکانت است، دقیقاً خروجی زیر را بازگردان:
-{"status": false}
+اگر اطلاعات این اکانت در وب در دسترس نبود یا صفحه پیدا نشد، دقیقاً خروجی زیر را بازگردان:
+{"status": false, "reason": "data_not_accessible"}
 
 در غیر این صورت، خروجی را الزاماً و منحصراً به صورت یک شیء JSON با ساختار زیر بازگردان:
 {
-  "role": "عنوان دقیق نقش و کاراکتر اکانت بر اساس اسکرین‌شات",
-  "goal": "هدف اصلی و مأموریت محتوایی اکانت",
+  "status": true,
+  "role": "...",
+  "goal": "...",
   "tone": "1",
   "expertise": 4,
   "reasoning": "تحلیل سیاسی و منطقی",
   "risk": 3,
-  "keywords": "واژگان کلیدی و تکه‌کلام‌ها (جدا شده با ویرگول)",
-  "forbidden": "خطوط قرمز و عبارات ممنوعه",
-  "audience": "جامعه مخاطبان هدف",
-  "emotion": "بار عاطفی و احساس غالب",
+  "keywords": "...",
+  "forbidden": "...",
+  "audience": "...",
+  "emotion": "...",
   "certaintyLevel": 4,
-  "rules": "قواعد ساختاری و نحوه نگارش",
-  "angles": "زوایای ورود به موضوع",
-  "visualTone": "هویت بصری و سبک تصویرسازی متناسب با هویت اکانت (مثال: مستند و واقع‌گرایانه با نور طبیعی / Editorial news photojournalist / گرافیک مینیمال داده‌محور)"
-}
-
-مقادیر مجاز:
-- expertise: عدد صحیح ۱ تا ۵
-- tone: عدد ۱ تا ۶ (1: رسمی و ژورنالیستی، 2: تحلیلی و منطقی، 3: مردمی و عامیانه، 4: احساسی و روایتی، 5: طنز و وایرال، 6: حقوق بشری و دادخواهی)
-- reasoning: دقیقاً یکی از ۳ گزینه: ["مبتنی بر آمار و سند", "تجربه شخصی و روایت مردم", "تحلیل سیاسی و منطقی"]
-- risk: عدد صحیح ۱ تا ۵ (1=محتاط، 3=متعادل، 5=بسیار صریح و بی‌پروا)`;
-        } else {
-            systemPrompt = `تو یک استراتژیست ارشد تولید محتوا و معماری پرسونا در پلتفرم X (توییتر) هستی.
-وظیفه تو استخراج و تنظیم دقیق مؤلفه‌های اصلی هویت و لحن بصری اکانت @${cleanedUsername || 'کاربر'} است.
-
-[شناسه اکانت]: @${cleanedUsername || 'کاربر'}
-[متن بیو/توییت‌ها]: "${profileText ? profileText.slice(0, 1800) : 'محتوای متنی ثبت نشده است.'}"
-[توضیحات دستی کاربر]: "${userNotes || 'توضیحات دستی ثبت نشده است.'}"
-
-اگر هویت اکانت کاملاً نامشخص و اطلاعات موجود ناکافی است، دقیقاً خروجی زیر را بازگردان:
-{"status": false}
-
-در غیر این صورت، خروجی را الزاماً و منحصراً به صورت یک شیء JSON با ساختار زیر بازگردان:
-{
-  "role": "این فرد چه کسی است؟ (عنوان دقیق نقش و کاراکتر اکانت)",
-  "goal": "هدف اصلی و مأموریت محتوایی اکانت",
-  "tone": "1",
-  "expertise": 4,
-  "reasoning": "تحلیل سیاسی و منطقی",
-  "risk": 3,
-  "keywords": "تکه‌کلام‌ها و واژگان کلیدی (جدا شده با ویرگول)",
-  "forbidden": "خطوط قرمز و کلمات ممنوعه",
-  "audience": "جامعه و قشر مخاطبان هدف اصلی",
-  "emotion": "بار عاطفی و احساس غالب پیام‌ها",
-  "certaintyLevel": 4,
-  "rules": "قواعد ساختاری، ایموجی و هشتگ",
-  "angles": "زوایای ورود به موضوع",
-  "visualTone": "هویت بصری و سبک تصویرسازی متناسب با اکانت (مثال: عکاسی مستند خبری، زاویه دید عریض و بدون اغراق مصنوعی)"
-}
-
-مقادیر مجاز:
-- expertise: عدد صحیح ۱ تا ۵ (1=شهروند عادی، 3=فعال/آگاه، 5=پژوهشگر/متخصص)
-- tone: عدد ۱ تا ۶ (1: رسمی و ژورنالیستی، 2: تحلیلی و منطقی، 3: مردمی و عامیانه، 4: احساسی و روایتی، 5: طنز و وایرال، 6: حقوق بشری و دادخواهی)
-- reasoning: یکی از ۳ گزینه: ["مبتنی بر آمار و سند", "تجربه شخصی و روایت مردم", "تحلیل سیاسی و منطقی"]
-- risk: عدد صحیح ۱ تا ۵ (1=محتاط، 3=متعادل، 5=بسیار صریح و بی‌پروا)`;
-        }
+  "rules": "...",
+  "angles": "...",
+  "visualTone": "..."
+}`;
 
         // آماده‌سازی بخش‌های ورودی شامل تصویر یا متن
         const promptParts = [{ text: systemPrompt }];
@@ -2960,9 +2935,13 @@ async function analyzeAccountWithAI() {
             });
         }
 
+        // ارسال درخواست با ابزار Grounding فعال شده: tools: [{ google_search: {} }]
         const promptPayload = {
             contents: [
                 { role: 'user', parts: promptParts }
+            ],
+            tools: [
+                { google_search: {} }
             ],
             generationConfig: { response_mime_type: "application/json" }
         };
@@ -2970,10 +2949,9 @@ async function analyzeAccountWithAI() {
         recordUsage(systemPrompt.length, false);
         const geminiData = await fetchWithFallback(promptPayload);
         const rawResponseText = geminiData.candidates[0].content.parts[0].text;
-        
+
         let parsedResult = null;
         try {
-            // پاک‌سازی فرمت مارک‌داون JSON در صورت بازگشت ```json ... ```
             let cleaned = (rawResponseText || "").trim();
             cleaned = cleaned.replace(/^```(?:json)?\s*/i, '').replace(/\s*```$/i, '').trim();
             parsedResult = JSON.parse(cleaned);
@@ -2997,26 +2975,47 @@ async function analyzeAccountWithAI() {
             parsedResult = stripMarkdownBold(parsedResult);
         }
 
-        // بررسی پاسخ عدم دسترسی یا شکست استخراج
         if (!parsedResult || parsedResult.success === false || parsedResult.status === false || parsedResult.reason === "data_not_accessible") {
-            alert("خطا در استخراج اطلاعات. لطفاً اسکرینشات پروفایل یا چند خط بیو را وارد کنید.");
+            const failMsg = "اطلاعاتی از صفحه عمومی این اکانت یافت نشد. لطفاً نام کاربری را بررسی کنید یا اسکرین‌شات پروفایل یا چند خط بیو را وارد نمایید.";
+            if (errorBanner) {
+                errorBanner.innerText = `⚠️ ${failMsg}`;
+                errorBanner.style.display = "block";
+            }
+            alert(failMsg);
             return;
         }
 
-        // اعمال نتایج در فرم و بروزرسانی ذخیره‌سازی و پیش‌نمایش
+        // تکمیل خودکار فیلدهای پرسونا
         applyAccountAnalysisValues(parsedResult, cleanedUsername);
+
+        // باز کردن بخش پیشرفته برای مشاهده تمام مؤلفه‌ها توسط کاربر
+        const advDetails = document.getElementById('accAdvancedDetails');
+        if (advDetails) advDetails.open = true;
+
+        // مخفی‌سازی بنر خطا در صورت موفقیت
+        if (errorBanner) {
+            errorBanner.style.display = "none";
+            errorBanner.innerText = "";
+        }
+
+        // پیام موفقیت
         alert(hasScreenshot 
-            ? `📸 تحلیل تصویری اسکرین‌شات با موفقیت انجام شد و شخصیت اکانت تنظیم گردید!` 
-            : `✨ کاراکتر اکانت @${cleanedUsername || 'انتخابی'} با موفقیت توسط هوش مصنوعی تنظیم شد!`);
+            ? `📸 تحلیل و استخراج زنده هویت اکانت @${cleanedUsername || 'انتخابی'} با موفقیت انجام شد!` 
+            : `✨ اطلاعات واقعی و هویت اکانت @${cleanedUsername || 'انتخابی'} با موفقیت از پلتفرم X استخراج و در فرم درج گردید!`);
 
     } catch (error) {
         console.error("خطا در تحلیل اکانت با هوش مصنوعی:", error);
-        alert("خطا در استخراج اطلاعات. لطفاً اسکرینشات پروفایل یا چند خط بیو را وارد کنید.");
+        const errorMsg = "خطا در استخراج اطلاعات از صفحه اکانت. لطفاً اسکرین‌شات پروفایل یا چند خط بیو را وارد کنید.";
+        if (errorBanner) {
+            errorBanner.innerText = `⚠️ ${errorMsg}`;
+            errorBanner.style.display = "block";
+        }
+        alert(errorMsg);
     } finally {
-        // تضمین مخفی‌سازی نشانگر بارگذاری و فعال‌سازی مجدد دکمه
         if (statusEl) statusEl.style.display = "none";
         if (analyzeBtn) {
             analyzeBtn.disabled = false;
+            analyzeBtn.innerHTML = originalBtnText;
             analyzeBtn.style.opacity = "1";
             analyzeBtn.style.cursor = "pointer";
         }
@@ -3482,6 +3481,12 @@ async function fetchWithFallback(promptPayload) {
 
                 if (data.error) {
                     lastErrorMsg = data.error.message || `کد خطا: ${data.error.code || 'نامشخص'}`;
+                    if (promptPayload.generationConfig && promptPayload.generationConfig.response_mime_type && 
+                        (lastErrorMsg.includes("response_mime_type") || lastErrorMsg.includes("Tool use") || lastErrorMsg.includes("tools"))) {
+                        delete promptPayload.generationConfig.response_mime_type;
+                        modelIndex--;
+                        continue;
+                    }
                     console.warn(`مدل ${currentModel} با خطا مواجه شد (${lastErrorMsg}). سوئیچ به مدل بعدی روی همین کلید...`);
                     continue;
                 }
