@@ -883,9 +883,30 @@
         </details>
 
         <div class="card">
-            <div class="card-title">✏️ ورودی خبر / سوژه اصلی یا لینک (وب‌سایت یا پلتفرم X)</div>
+            <div class="card-header-flex">
+                <h4 class="card-title">✏️ ورودی خبر / سوژه اصلی یا لینک (وب‌سایت یا پلتفرم X)</h4>
+                <div style="display:flex; gap:4px;">
+                    <button class="btn-translate" onclick="translateSectionContent('newsInput')">🌐 ترجمه</button>
+                </div>
+            </div>
             <textarea id="newsInput" placeholder="متن خبر، اطلاعیه، سوژه یا لینک خبر / پست X را وارد کنید..."></textarea>
             
+            <!-- باکس نمایش تاشو/بازشونده ترجمه فارسی ورودی خبر / لینک -->
+            <div id="translation_container_newsInput" style="display: none; margin-top: 10px; background: rgba(15, 118, 110, 0.15); border: 1px solid rgba(45, 212, 191, 0.35); border-radius: 6px; padding: 10px 12px; font-family: 'Vazirmatn', Tahoma, sans-serif;">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
+                    <span style="font-size: 0.8rem; font-weight: bold; color: #2dd4bf; display: flex; align-items: center; gap: 5px;">
+                        🇮🇷 ترجمه روان فارسی:
+                    </span>
+                    <div style="display: flex; gap: 6px;">
+                        <button class="btn-copy" style="padding: 2px 8px; font-size: 0.72rem; background: #0f766e; color: white;" onclick="copyTranslationDirect('newsInput')">📋 کپی ترجمه</button>
+                        <button class="btn-copy" style="padding: 2px 6px; font-size: 0.72rem; background: transparent; color: #94a3b8; border: 1px solid #334155;" onclick="toggleTranslationBox('newsInput')">✕ بستن</button>
+                    </div>
+                </div>
+                <div id="translation_text_newsInput" style="font-size: 0.83rem; color: #f0fdfa; line-height: 1.65; direction: rtl; text-align: right; white-space: pre-wrap;">
+                    در حال بارگذاری ترجمه...
+                </div>
+            </div>
+
             <div class="action-bar">
                 <button class="btn-run" onclick="runWorkflow()">🚀 اجرای پردازش کامل همه بخش‌ها</button>
                 <button class="btn-reset" onclick="resetAllOutputs()">🗑️ ریست خروجی‌ها</button>
@@ -3007,6 +3028,25 @@ let currentTopOverlayText = "";
 let loadedImageObject = null;
 const cardTranslationCache = {};
 
+function copyTranslationDirect(elementId) {
+    const textEl = document.getElementById(`translation_text_${elementId}`);
+    const text = textEl ? textEl.innerText.trim() : "";
+    if (text && !text.startsWith("در حال") && !text.startsWith("خطا") && !text.startsWith("⏳")) {
+        navigator.clipboard.writeText(text).then(() => {
+            alert("✅ ترجمه فارسی در کلیپ‌بورد کپی شد.");
+        });
+    } else {
+        alert("متن ترجمه‌ای برای کپی وجود ندارد.");
+    }
+}
+
+function toggleTranslationBox(elementId) {
+    const container = document.getElementById(`translation_container_${elementId}`);
+    if (container) {
+        container.style.display = 'none';
+    }
+}
+
 function extractTextForTranslation(el) {
     if (!el) return "";
     if (el.tagName === 'INPUT' || el.tagName === 'TEXTAREA') {
@@ -3023,10 +3063,14 @@ async function translateSectionContent(elementId) {
     const el = document.getElementById(elementId);
     if (!el) return;
 
-    const textToTranslate = extractTextForTranslation(el);
+    const rawText = extractTextForTranslation(el);
     
-    if (!textToTranslate || textToTranslate.includes("منتظر اجرا...") || textToTranslate.includes("محتوا یافت نشد.") || textToTranslate.includes("در حال تولید...")) {
-        alert("متنی برای ترجمه یافت نشد! ابتدا محتوای این بخش را با دکمه «🔄 ساخت» تولید کنید.");
+    if (!rawText || rawText.includes("منتظر اجرا...") || rawText.includes("محتوا یافت نشد.") || rawText.includes("در حال تولید...")) {
+        if (elementId === 'newsInput') {
+            alert("متنی برای ترجمه یافت نشد! لطفاً ابتدا متن خبر یا سوژه اصلی یا لینک را وارد نمایید.");
+        } else {
+            alert("متنی برای ترجمه یافت نشد! ابتدا محتوای این بخش را با دکمه «🔄 ساخت» تولید کنید.");
+        }
         return;
     }
 
@@ -3059,23 +3103,13 @@ async function translateSectionContent(elementId) {
         copyBtn.className = "btn-copy";
         copyBtn.style.cssText = "padding: 2px 8px; font-size: 0.72rem; background: #0f766e; color: white;";
         copyBtn.innerText = "📋 کپی ترجمه";
-        copyBtn.onclick = () => {
-            const contentDiv = document.getElementById(`translation_text_${elementId}`);
-            const t = contentDiv ? contentDiv.innerText.trim() : "";
-            if (t && !t.startsWith("در حال") && !t.startsWith("خطا")) {
-                navigator.clipboard.writeText(t).then(() => alert("✅ ترجمه فارسی در کلیپ‌بورد کپی شد."));
-            } else {
-                alert("متن ترجمه‌ای برای کپی وجود ندارد.");
-            }
-        };
+        copyBtn.onclick = () => copyTranslationDirect(elementId);
         
         const closeBtn = document.createElement('button');
         closeBtn.className = "btn-copy";
         closeBtn.style.cssText = "padding: 2px 6px; font-size: 0.72rem; background: transparent; color: #94a3b8; border: 1px solid #334155;";
         closeBtn.innerText = "✕ بستن";
-        closeBtn.onclick = () => {
-            transContainer.style.display = 'none';
-        };
+        closeBtn.onclick = () => toggleTranslationBox(elementId);
         
         btnGroup.appendChild(copyBtn);
         btnGroup.appendChild(closeBtn);
@@ -3100,6 +3134,16 @@ async function translateSectionContent(elementId) {
     transContainer.style.display = 'block';
     const textEl = document.getElementById(`translation_text_${elementId}`);
 
+    let textToTranslate = rawText;
+    if (elementId === 'newsInput' && (textToTranslate.startsWith('http://') || textToTranslate.startsWith('https://'))) {
+        if (textEl) textEl.innerHTML = '<span style="color: #2dd4bf;">⏳ در حال واکشی محتوای لینک و ترجمه به زبان فارسی...</span>';
+        try {
+            textToTranslate = await resolveInputContent(textToTranslate);
+        } catch (e) {
+            console.warn("Could not resolve URL for translation, translating raw input:", e);
+        }
+    }
+
     // استفاده از کش در صورت عدم تغییر متن
     const cacheKey = `${elementId}_${textToTranslate}`;
     if (cardTranslationCache[cacheKey]) {
@@ -3116,7 +3160,7 @@ async function translateSectionContent(elementId) {
                     role: 'user',
                     parts: [
                         {
-                            text: `تو یک مترجم و ویراستار ارشد دوزبانه شبکه‌های اجتماعی هستی. متن زیر را به زبان فارسی بسیار روان، شیوا، جذاب و متناسب با سبک حرفه‌ای توییتر (پلتفرم X) ترجمه کن. ساختار بخش‌ها یا خطوط را حفظ کن. خروجی فقط و فقط متن ترجمه فارسی باشد بدون هیچ توضیح اضافی، بدون پرانتز اضافه و بدون مارک‌داون:\n\n[متن اصلی]:\n${textToTranslate}`
+                            text: `تو یک مترجم و ویراستار ارشد دوزبانه شبکه‌های اجتماعی و ژورنالیسم هستی. متن زیر را به زبان فارسی بسیار روان، شیوا، جذاب و متناسب با سبک حرفه‌ای توییتر (پلتفرم X) ترجمه کن. ساختار بخش‌ها یا خطوط را حفظ کن. خروجی فقط و فقط متن ترجمه فارسی باشد بدون هیچ توضیح اضافی، بدون پرانتز اضافه و بدون مارک‌داون:\n\n[متن اصلی]:\n${textToTranslate}`
                         }
                     ]
                 }
@@ -3155,6 +3199,9 @@ function resetAllOutputs() {
     document.querySelectorAll('[id^="translation_container_"]').forEach(c => {
         c.style.display = 'none';
     });
+
+    const newsTransText = document.getElementById('translation_text_newsInput');
+    if (newsTransText) newsTransText.innerText = "در حال بارگذاری ترجمه...";
 
     currentTopOverlayText = "";
     loadedImageObject = null;
