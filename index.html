@@ -377,6 +377,7 @@
                     <option value="gemini-3.7-flash">✨ gemini-3.7-flash (پیشرفته)</option>
                     <option value="gemini-3.6-flash">🧩 gemini-3.6-flash (استاندارد)</option>
                     <option value="gemini-3.5-flash">🎯 gemini-3.5-flash (متعادل)</option>
+                    <option value="gemini-flash-latest">🚀 gemini-flash-latest (فلش)</option>
                 </select>
             </div>
         </div>
@@ -1158,9 +1159,18 @@ const MODERN_AVAILABLE_MODELS = [
     'gemini-flash-lite-latest',
     'gemini-3.7-flash',
     'gemini-3.6-flash',
-    'gemini-3.5-flash'
+    'gemini-3.5-flash',
+    'gemini-flash-latest'
 ];
-const FALLBACK_MODELS = [...MODERN_AVAILABLE_MODELS];
+const FALLBACK_MODELS = [
+    'gemini-flash-lite-latest',
+    'gemini-flash-latest',
+    'gemini-3.7-flash',
+    'gemini-3.8-flash',
+    'gemini-3.6-flash',
+    'gemini-3.5-flash',
+    'gemini-3.1-flash-lite'
+];
 
 let selectedModel = localStorage.getItem('gemini_selected_model') || 'gemini-flash-lite-latest';
 if (!MODERN_AVAILABLE_MODELS.includes(selectedModel)) {
@@ -2995,42 +3005,138 @@ async function analyzeAccountWithAI() {
 /* ==================== سایر بخش‌های سیستم ==================== */
 let currentTopOverlayText = "";
 let loadedImageObject = null;
+const cardTranslationCache = {};
 
-function translateSectionContent(elementId) {
-    const el = document.getElementById(elementId);
-    let textToTranslate = "";
-    
-    if (el) {
-        if (el.tagName === 'INPUT' || el.tagName === 'TEXTAREA') {
-            textToTranslate = el.value.trim();
-        } else {
-            textToTranslate = el.innerText.trim();
-        }
+function extractTextForTranslation(el) {
+    if (!el) return "";
+    if (el.tagName === 'INPUT' || el.tagName === 'TEXTAREA') {
+        return el.value.trim();
     }
+    const itemTexts = el.querySelectorAll('.item-text');
+    if (itemTexts.length > 0) {
+        return Array.from(itemTexts).map(item => item.innerText.trim()).filter(Boolean).join('\n\n');
+    }
+    return el.innerText.trim();
+}
+
+async function translateSectionContent(elementId) {
+    const el = document.getElementById(elementId);
+    if (!el) return;
+
+    const textToTranslate = extractTextForTranslation(el);
     
-    if (!textToTranslate || textToTranslate.includes("منتظر اجرا...") || textToTranslate.includes("محتوا یافت نشد.")) {
-        alert("متنی برای ترجمه یافت نشد!");
+    if (!textToTranslate || textToTranslate.includes("منتظر اجرا...") || textToTranslate.includes("محتوا یافت نشد.") || textToTranslate.includes("در حال تولید...")) {
+        alert("متنی برای ترجمه یافت نشد! ابتدا محتوای این بخش را با دکمه «🔄 ساخت» تولید کنید.");
         return;
     }
 
-    // تعیین دقیق زبان مبدا بر اساس زبان خروجی فعال
-    const currentLang = document.getElementById('languageSelect').value;
-    let sourceLang = 'auto';
-    if (currentLang === 'en') {
-        sourceLang = 'en';
-    } else if (currentLang === 'ar') {
-        sourceLang = 'ar';
-    } else if (currentLang === 'fr') {
-        sourceLang = 'fr';
-    } else if (currentLang === 'fa') {
-        sourceLang = 'fa';
+    const containerId = `translation_container_${elementId}`;
+    let transContainer = document.getElementById(containerId);
+
+    // رفتار تاگل (Toggle): اگر باز است، با کلیک مجدد بسته می‌شود
+    if (transContainer && transContainer.style.display !== 'none') {
+        transContainer.style.display = 'none';
+        return;
     }
-    
-    navigator.clipboard.writeText(textToTranslate).then(() => {
-        window.open(`https://translate.google.com/?sl=${sourceLang}&tl=fa&text=${encodeURIComponent(textToTranslate)}&op=translate`, '_blank');
-    }).catch(err => {
-        alert("خطا در کپی متن: " + err);
-    });
+
+    // در صورت عدم وجود، ایجاد داینامیک ظرف ترجمه درون‌خطی زیر کارت
+    if (!transContainer) {
+        transContainer = document.createElement('div');
+        transContainer.id = containerId;
+        transContainer.style.cssText = "display: none; margin-top: 10px; background: rgba(15, 118, 110, 0.15); border: 1px solid rgba(45, 212, 191, 0.35); border-radius: 6px; padding: 10px 12px; font-family: 'Vazirmatn', Tahoma, sans-serif;";
+        
+        const header = document.createElement('div');
+        header.style.cssText = "display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;";
+        
+        const titleSpan = document.createElement('span');
+        titleSpan.style.cssText = "font-size: 0.8rem; font-weight: bold; color: #2dd4bf; display: flex; align-items: center; gap: 5px;";
+        titleSpan.innerHTML = "🇮🇷 ترجمه روان فارسی:";
+        
+        const btnGroup = document.createElement('div');
+        btnGroup.style.cssText = "display: flex; gap: 6px;";
+        
+        const copyBtn = document.createElement('button');
+        copyBtn.className = "btn-copy";
+        copyBtn.style.cssText = "padding: 2px 8px; font-size: 0.72rem; background: #0f766e; color: white;";
+        copyBtn.innerText = "📋 کپی ترجمه";
+        copyBtn.onclick = () => {
+            const contentDiv = document.getElementById(`translation_text_${elementId}`);
+            const t = contentDiv ? contentDiv.innerText.trim() : "";
+            if (t && !t.startsWith("در حال") && !t.startsWith("خطا")) {
+                navigator.clipboard.writeText(t).then(() => alert("✅ ترجمه فارسی در کلیپ‌بورد کپی شد."));
+            } else {
+                alert("متن ترجمه‌ای برای کپی وجود ندارد.");
+            }
+        };
+        
+        const closeBtn = document.createElement('button');
+        closeBtn.className = "btn-copy";
+        closeBtn.style.cssText = "padding: 2px 6px; font-size: 0.72rem; background: transparent; color: #94a3b8; border: 1px solid #334155;";
+        closeBtn.innerText = "✕ بستن";
+        closeBtn.onclick = () => {
+            transContainer.style.display = 'none';
+        };
+        
+        btnGroup.appendChild(copyBtn);
+        btnGroup.appendChild(closeBtn);
+        header.appendChild(titleSpan);
+        header.appendChild(btnGroup);
+        
+        const textDiv = document.createElement('div');
+        textDiv.id = `translation_text_${elementId}`;
+        textDiv.style.cssText = "font-size: 0.83rem; color: #f0fdfa; line-height: 1.65; direction: rtl; text-align: right; white-space: pre-wrap;";
+        
+        transContainer.appendChild(header);
+        transContainer.appendChild(textDiv);
+        
+        if (el.nextSibling) {
+            el.parentNode.insertBefore(transContainer, el.nextSibling);
+        } else {
+            el.parentNode.appendChild(transContainer);
+        }
+    }
+
+    // نمایش ظرف ترجمه
+    transContainer.style.display = 'block';
+    const textEl = document.getElementById(`translation_text_${elementId}`);
+
+    // استفاده از کش در صورت عدم تغییر متن
+    const cacheKey = `${elementId}_${textToTranslate}`;
+    if (cardTranslationCache[cacheKey]) {
+        if (textEl) textEl.innerText = cardTranslationCache[cacheKey];
+        return;
+    }
+
+    if (textEl) textEl.innerHTML = '<span style="color: #2dd4bf;">⏳ در حال ترجمه دقیق و روان به زبان فارسی با هوش مصنوعی...</span>';
+
+    try {
+        const payload = {
+            contents: [
+                {
+                    role: 'user',
+                    parts: [
+                        {
+                            text: `تو یک مترجم و ویراستار ارشد دوزبانه شبکه‌های اجتماعی هستی. متن زیر را به زبان فارسی بسیار روان، شیوا، جذاب و متناسب با سبک حرفه‌ای توییتر (پلتفرم X) ترجمه کن. ساختار بخش‌ها یا خطوط را حفظ کن. خروجی فقط و فقط متن ترجمه فارسی باشد بدون هیچ توضیح اضافی، بدون پرانتز اضافه و بدون مارک‌داون:\n\n[متن اصلی]:\n${textToTranslate}`
+                        }
+                    ]
+                }
+            ]
+        };
+
+        const geminiData = await fetchWithFallback(payload);
+        const translated = geminiData?.candidates?.[0]?.content?.parts?.[0]?.text?.trim();
+        if (translated && textEl) {
+            textEl.innerText = translated;
+            cardTranslationCache[cacheKey] = translated;
+        } else if (textEl) {
+            textEl.innerText = "ترجمه دریافت نشد. لطفاً مجدداً تلاش کنید.";
+        }
+    } catch (err) {
+        console.error("Translation error:", err);
+        if (textEl) {
+            textEl.innerText = "خطا در برقراری ارتباط با هوش مصنوعی برای ترجمه. لطفاً اتصال اینترنت یا کلید API را بررسی فرمایید.";
+        }
+    }
 }
 
 function resetAllOutputs() {
@@ -3045,6 +3151,10 @@ function resetAllOutputs() {
     document.getElementById('outHashtags').innerText = "منتظر اجرا...";
     document.getElementById('outAiSuggestions').innerText = "منتظر اجرا...";
     document.getElementById('outSchedule').innerText = "منتظر اجرا...";
+
+    document.querySelectorAll('[id^="translation_container_"]').forEach(c => {
+        c.style.display = 'none';
+    });
 
     currentTopOverlayText = "";
     loadedImageObject = null;
@@ -3119,6 +3229,25 @@ function stripMarkdownBold(value) {
         );
     }
     return value;
+}
+
+function safeParseGeminiJSON(text) {
+    if (!text) throw new Error("پاسخی از مدل دریافت نشد.");
+    let clean = String(text).trim();
+    clean = clean.replace(/^```(?:json)?\s*/i, '').replace(/\s*```$/i, '').trim();
+    try {
+        return JSON.parse(clean);
+    } catch (e) {
+        const jsonMatch = clean.match(/(\{[\s\S]*\}|\[[\s\S]*\])/);
+        if (jsonMatch) {
+            try {
+                return JSON.parse(jsonMatch[0]);
+            } catch (err) {
+                // pass through to throw
+            }
+        }
+        throw new Error("قالب داده بازگردانده‌شده نامعتبر است.");
+    }
 }
 
 function renderListWithCopyButtons(containerId, itemsArray, limitLabel = null) {
@@ -3261,15 +3390,37 @@ async function fetchWithFallback(promptPayload) {
     let keyAttempts = 0;
     const totalKeys = Math.max(1, apiKeysData.length);
 
+    const initialApiKey = getActiveApiKey();
+    if (!initialApiKey || initialApiKey === "YOUR_API_KEY_HERE" || initialApiKey.trim() === "") {
+        updateStatusUI("⚠️ لطفاً ابتدا کلید API خود را وارد کنید", true);
+        const panel = document.getElementById('apiManagePanel');
+        if (panel && !panel.classList.contains('show')) {
+            panel.classList.add('show');
+        }
+        throw new Error("کلید API جمینای تنظیم نشده است. لطفاً از بخش «مدیریت کلیدها» کلید خود را وارد کنید.");
+    }
+
     // مدل انتخابی کاربر در اولویت اول، و سپس سایر مدل‌های معتبر به عنوان زنجیره پشتیبان (Fallback)
     const userChosenModel = document.getElementById('manualModelSelect')?.value || selectedModel || 'gemini-flash-lite-latest';
-    const fallbackChain = [
+    const allModelsToTry = [
         userChosenModel,
-        ...MODERN_AVAILABLE_MODELS.filter(m => m !== userChosenModel)
+        'gemini-flash-lite-latest',
+        'gemini-flash-latest',
+        'gemini-3.7-flash',
+        'gemini-3.8-flash',
+        'gemini-3.6-flash',
+        'gemini-3.5-flash',
+        'gemini-3.1-flash-lite'
     ];
+    const fallbackChain = allModelsToTry.filter((item, pos, self) => self.indexOf(item) === pos);
+
+    let lastErrorMsg = "";
 
     while (keyAttempts < totalKeys) {
         const apiKey = getActiveApiKey();
+        if (!apiKey || apiKey === "YOUR_API_KEY_HERE" || apiKey.trim() === "") {
+            break;
+        }
 
         for (let modelIndex = 0; modelIndex < fallbackChain.length; modelIndex++) {
             const currentModel = fallbackChain[modelIndex];
@@ -3283,17 +3434,22 @@ async function fetchWithFallback(promptPayload) {
                 const data = await response.json();
 
                 if (data.error) {
-                    console.warn(`مدل ${currentModel} با خطا مواجه شد (${data.error.message || 'Error'}). سوئیچ به مدل بعدی روی همین کلید...`);
+                    lastErrorMsg = data.error.message || `کد خطا: ${data.error.code || 'نامشخص'}`;
+                    console.warn(`مدل ${currentModel} با خطا مواجه شد (${lastErrorMsg}). سوئیچ به مدل بعدی روی همین کلید...`);
                     continue;
                 }
 
-                if (data.candidates && data.candidates[0] && data.candidates[0].content && data.candidates[0].content.parts) {
-                    lastUsedModel = currentModel;
-                    updateStatusUI(`🟢 متصل به کلید ${activeKeyIndex + 1}`);
-                    return data;
+                if (data.candidates && data.candidates[0] && data.candidates[0].content && Array.isArray(data.candidates[0].content.parts) && data.candidates[0].content.parts.length > 0) {
+                    const textPart = data.candidates[0].content.parts.find(p => p && p.text);
+                    if (textPart && textPart.text) {
+                        lastUsedModel = currentModel;
+                        updateStatusUI(`🟢 متصل به کلید ${activeKeyIndex + 1}`);
+                        return data;
+                    }
                 }
             } catch (err) {
-                console.warn(`خطای شبکه روی مدل ${currentModel}: ${err.message}`);
+                lastErrorMsg = err.message || "خطای اتصال به شبکه اینترنت";
+                console.warn(`خطای شبکه روی مدل ${currentModel}: ${lastErrorMsg}`);
             }
         }
 
@@ -3302,7 +3458,8 @@ async function fetchWithFallback(promptPayload) {
         keyAttempts++;
     }
 
-    throw new Error("تمام کلیدها یا مدل‌های Gemini با خطا مواجه شدند.");
+    const errorDetails = lastErrorMsg ? ` (${lastErrorMsg})` : "";
+    throw new Error(`تمام کلیدها یا مدل‌های Gemini با خطا مواجه شدند${errorDetails}. لطفاً کلید API، محدودیت مصرف یا اینترنت خود را بررسی کنید.`);
 }
 
 /* ==================== پرامپت‌ها و فرایند تولید کامل ==================== */
@@ -3491,6 +3648,22 @@ ${isRewrite ? '🛑 توجه: این یک درخواست بازنویسی مجد
 }
 
 function applySectionResult(sectionType, parsedResult) {
+    const targetElementIdMap = {
+        'posts': 'outPosts',
+        'quotes': 'outQuotes',
+        'comments': 'outComments',
+        'overlays': 'outOverlays',
+        'hashtags': 'outHashtags',
+        'ai_suggestions': 'outAiSuggestions',
+        'image_prompt': 'outImagePrompt',
+        'schedule': 'outSchedule'
+    };
+    const targetElId = targetElementIdMap[sectionType];
+    if (targetElId) {
+        const transCont = document.getElementById(`translation_container_${targetElId}`);
+        if (transCont) transCont.style.display = 'none';
+    }
+
     if (sectionType === 'posts') {
         renderListWithCopyButtons('outPosts', parsedResult.posts, '۲۵۰ کاراکتر');
     } else if (sectionType === 'quotes') {
@@ -3528,7 +3701,7 @@ async function runSingle(sectionType, isRewrite = false, skipHistory = false) {
         contents: [
             { role: 'user', parts: [{ text: `${systemPrompt}\n\n[خبر/سوژه اصلی]:\n${resolvedInput}` }] }
         ],
-        generationConfig: { response_mime_type: "application/json" }
+        generationConfig: { responseMimeType: "application/json" }
     };
 
     const targetElementId = {
@@ -3548,17 +3721,22 @@ async function runSingle(sectionType, isRewrite = false, skipHistory = false) {
     try {
         recordUsage(systemPrompt.length + resolvedInput.length, false);
         const geminiData = await fetchWithFallback(fullPayload);
+        const partWithText = geminiData?.candidates?.[0]?.content?.parts?.find(p => p && p.text);
+        const rawContentText = partWithText ? partWithText.text : (geminiData?.candidates?.[0]?.content?.parts?.[0]?.text || "");
         const parsedResult = stripMarkdownBold(
-            JSON.parse(geminiData.candidates[0].content.parts[0].text)
+            safeParseGeminiJSON(rawContentText)
         );
 
         applySectionResult(sectionType, parsedResult);
+        updateStatusUI(`🟢 متصل به کلید ${activeKeyIndex + 1}`);
         if (!skipHistory) saveToHistory({ [sectionType]: parsedResult });
         return parsedResult;
 
     } catch (err) {
         console.error(err);
-        if (targetEl) targetEl.innerText = "خطا در برقراری ارتباط با API جمینای.";
+        const errMessage = err.message || "خطا در برقراری ارتباط با API جمینای.";
+        if (targetEl) targetEl.innerText = `❌ ${errMessage}`;
+        updateStatusUI(`⚠️ ${errMessage}`, true);
         return null;
     }
 }
@@ -4009,6 +4187,12 @@ function onImagePromptOptionChanged() {
 }
 
 async function translateActivePromptToPersian() {
+    const container = document.getElementById('persianTranslationContainer');
+    if (container && container.style.display !== 'none') {
+        container.style.display = 'none';
+        return;
+    }
+
     const activeBox = document.getElementById('activeImagePromptBox');
     const promptText = activeBox ? activeBox.innerText.trim() : "";
     
@@ -4017,7 +4201,6 @@ async function translateActivePromptToPersian() {
         return;
     }
 
-    const container = document.getElementById('persianTranslationContainer');
     const textEl = document.getElementById('persianTranslationText');
     if (container) container.style.display = 'block';
     if (textEl) textEl.innerHTML = '<span style="color: #2dd4bf;">⏳ در حال ترجمه دقیق و روان به زبان فارسی...</span>';
