@@ -4107,37 +4107,90 @@ function buildSystemPromptForSection(sectionType, isRewrite = false) {
         langInstruction = "دستورالعمل حیاتی: کلیه خروجی‌ها را حتماً و کاملاً به زبان فارسی روان و اصیل بنویس.";
     }
 
+    const universalHighPrecisionRules = `
+=== HIGH-PRECISION MANDATORY PROMPT RULES & DYNAMIC SUBJECT BALANCING ===
+
+1. DYNAMIC PRIMARY SUBJECT/SOURCE IDENTIFICATION & BALANCED OPTION DISTRIBUTION:
+   - Automatically identify the primary anchor/subject of the input news (whether a Speaker/Person, a Media Outlet/Publication, an Event/Rally/Conference, or an Official Statement/Report).
+   - For POSTS and QUOTES: Explicitly reference the primary anchor/subject (e.g., the specific speaker's name, the news outlet, or the specific event title) in AT LEAST 2 out of the 3 options using varied journalistic angles.
+   - Leave 1 option focused purely on the broader political impact/message WITHOUT explicitly naming the anchor.
+   - For COMMENTS: Name or cite the subject/source in ONLY 1 or 2 options, keeping at least 1 option focused on a direct reaction without naming the subject.
+
+2. TWO-LAYER ANALYSIS MANDATE:
+   - LAYER 1 (Verbatim Facts & Direct Quotes): Extract raw news facts, hard data, names, dates, and EXACT verbatim spoken words.
+   - LAYER 2 (Strategic Context & Human Reaction): Extract political impact, strategic intent, sharp critique, and authentic human commentary.
+   - Posts MUST synthesize both Layer 1 (facts/quotes) + Layer 2 (political context & impact).
+   - Quotes and Comments MUST be drawn strictly from LAYER 2 (value-added analysis, strategic angles, sharp critique, zero raw news regurgitation).
+
+3. STRICT VERBATIM QUOTATION & NO-MIXING RULE (QUOTE SANITATION):
+   - Quotation Marks (« » or " ") MUST contain ONLY the EXACT, VERBATIM words spoken by the person.
+   - NEVER insert editorial transitions, paraphrasing, or speaker attributions INSIDE quote marks (e.g., NEVER write «متن اول و همچنین گفت متن دوم» or «متن اول. وی افزود متن دوم»).
+   - If combining two statements, keep them in separate distinct quote blocks or place all attributions/transitions OUTSIDE the quotation marks.
+   - Never alter, shorten, or paraphrase words inside quotes.
+
+4. SPECIFIC OUTPUT FORMULAS & STRICT LIMITS:
+   - POSTS: Max 280 characters. Complete journalistic/political report combining Layer 1 + Layer 2 (Who, What, Political context & impact).
+   - QUOTE CAPTIONS: Max 150 characters. Sharp, punchy, Layer 2 strategic analysis or critical angle for reposting on X (zero verbatim news repeats).
+   - COMMENTS: Max 120 characters. SINGLE continuous sentence acting as a direct, sharp, natural human reaction drawn strictly from Layer 2.
+   - OVERLAYS: Max 7 words. Short, catchy breaking-news style headline phrases.
+`;
+
     let sectionPromptDetails = "";
 
     if (sectionType === 'posts') {
         sectionPromptDetails = `وظیفه: تولید دقیقا ۳ گزینه پست مجزا + ماکزیمم ۱ رشته پست ۳ تایی (شامل ۳ جمله/پست مرتبط) مرتبط با خبر/سوژه برای پلتفرم X.
 
 🛑 قوانین بسیار سخت‌گیرانه (STRICT RULES):
-۱. مطلقاً از هیچ هشتگی (#) در متن پست‌ها و رشته پست استفاده نکن.
-۲. طول متن هر یک از ۳ گزینه پست تک‌پستی باید حداکثر ۲۵۰ کاراکتر باشد.
-۳. رشته پست باید ماکزیمم ۳ پست مرتبط متوالی داشته باشد که با ۱/، ۲/ و ۳/ شماره‌گذاری شده و هر جمله در یک سطر جداگانه باشد.
-۴. تیتر رشته پست باید به گونه‌ای مشخص بازگردانده شود (مثلاً: 🧵 رشته پست: یا 🧵 Thread:).
+۱. شناسایی و ارجاع متوازن به منبع/موضوع اصلی (DYNAMIC SUBJECT BALANCING):
+   - سوژه/منبع اصلی خبر (اعم از شخص/گوینده، رسانه/منبع خبری، رویداد/کنفرانس، یا بیانیه رسمی) را شناسایی کن.
+   - حداقل در ۲ گزینه از ۳ گزینه پست مجزا، به صورت صریح و با زاویه‌دید روزنامه‌نگارانه متنوع به منبع/سوژه اصلی اشاره کن.
+   - ۱ گزینه باقی‌مانده را بدون ذکر مستقیم نام منبع/سوژه، صرفاً روی پیامد و زوایای کلان خبری تمرکز بده.
+۲. ترکیب لایه ۱ و لایه ۲ (TWO-LAYER SYNTHESIS): پست‌ها باید ترکیبی از حقایق و نقل‌قول عینی خبر (لایه ۱) و پیامد، زمینه سیاسی یا تحلیل استراتژیک (لایه ۲) باشند.
+۳. طول متن و فرمول: طول هر پست مجزا حداکثر ۲۸۰ کاراکتر باشد (جامع، حرفه‌ای، روزنامه‌نگارانه).
+۴. پاک‌سازی نقل‌قول (QUOTE SANITATION): متن داخل گیومه (« » یا " ") باید فقط و فقط شامل عبارات ۱۰۰٪ عینی گوینده باشد. هرگز کلمات ربط، جملات توضیحی یا ادیتوریال را داخل گیومه قرار نده.
+۵. عدم استفاده از هشتگ (#): مطلقاً از هیچ هشتگی در پست‌ها استفاده نکن.
+۶. رشته پست: ماکزیمم ۳ پست متوالی با شماره‌گذاری ۱/ تا ۳/ (با تیتر 🧵 رشته پست: یا 🧵 Thread:).
 
 ساختار دقیق خروجی:
-- ۳ گزینه پست مجزا و کوتاه (هر کدام حداکثر ۲۵۰ کاراکتر)
+- ۳ گزینه پست مجزا و کوتاه (هر کدام حداکثر ۲۸۰ کاراکتر)
 - ۱ رشته پست ۳ تایی (شماره‌گذاری شده ۱/ تا ۳/)
 
 خروجی را به صورت یک آرایه JSON به شکل زیر بازگردان:
 { "posts": ["پست مجزا ۱", "پست مجزا ۲", "پست مجزا ۳", "🧵 رشته پست:\\n۱/ پست اول\\n۲/ پست دوم\\n۳/ پست سوم"] }`;
     } else if (sectionType === 'quotes') {
         sectionPromptDetails = `وظیفه: دقیقا ۳ گزینه کپشن کوت (Quote Caption) برای بازنشر خبر/پست بساز.
-🛑 قانون مهم: مطلقاً از هیچ هشتگی (#) در متن استفاده نکن.
-کپشن‌های کوت باید کوتاه، اثرگذار و مکمل پست اصلی باشند (حداکثر ۲۰۰ کاراکتر).
+
+🛑 قوانین بسیار سخت‌گیرانه (STRICT RULES):
+۱. ارجاع متوازن به سوژه/منبع اصلی (DYNAMIC SUBJECT BALANCING): حداقل در ۲ گزینه از ۳ گزینه کپشن کوت، مستقیماً نام یا عنوان سوژه/منبع اصلی خبر (شخص، رسانه، یا رویداد) را قید کن. ۱ گزینه باقی‌مانده را بدون ذکر نام، روی تحلیل پیامد و زاویه استراتژیک تمرکز بده.
+۲. استخراج صرفاً از لایه ۲ (STRICT LAYER 2 EXTRACTION): کپشن‌های کوت باید ۱۰۰٪ بر اساس تحلیل، نقد، زاویه استراتژیک یا ارزش‌افزوده لایه ۲ نوشته شوند. تکرار یا خلاصه کردن متن خامی که در لایه ۱ آمده اکیداً ممنوع است.
+۳. طول متن: حداکثر ۱۵۰ کاراکتر (Max 150 characters).
+۴. پاک‌سازی نقل‌قول (QUOTE SANITATION): اگر نقل‌قولی استفاده می‌شود، متون داخل گیومه (« » یا " ") باید ۱۰۰٪ عینی باشد و هیچ توضیح یا پیوند اضافی درون گیومه نیاید.
+۵. عدم تکرار: جملات کوت نباید عیناً با دیگر گزینه‌ها یا بخش‌ها تکرار شوند.
+۶. مطلقاً از هیچ هشتگی (#) استفاده نکن.
+
 خروجی را به صورت JSON زیر بازگردان:
 { "quotes": ["کپشن ۱", "کپشن ۲", "کپشن ۳"] }`;
     } else if (sectionType === 'comments') {
-        sectionPromptDetails = `وظیفه: دقیقا ۳ کامنت هوشمندانه، زاویه‌دار و متنوع برای درج زیر پست اصلی بساز (حداکثر ۱۵۰ کاراکتر).
-🛑 قانون مهم: مطلقاً از هیچ هشتگی (#) در متن کامنت‌ها استفاده نکن.
+        sectionPromptDetails = `وظیفه: دقیقا ۳ کامنت هوشمندانه، زاویه‌دار و طبیعی برای درج زیر پست اصلی بساز.
+
+🛑 قوانین بسیار سخت‌گیرانه (STRICT RULES):
+۱. استخراج صرفاً از لایه ۲ (STRICT LAYER 2 EXTRACTION): کامنت‌ها باید واکنش مستقیم، طبیعی، تیز انسانی، نقد یا حمایت استخراج‌شده از لایه ۲ باشند. هرگز نباید خلاصه خبر لایه ۱ یا شروع‌شونده با "فلانی گفت..."، "خبر می‌گوید..." باشد.
+۲. فرمول و طول متن: حداکثر ۱۲۰ کاراکتر (Max 120 characters). دقیقاً یک جمله پیوسته و کوتاه (SINGLE continuous sentence).
+۳. پاک‌سازی نقل‌قول (QUOTE SANITATION): متن داخل گیومه باید دقیقاً و ۱۰۰٪ عین عبارات گفته‌شده باشد.
+۴. تنوع گوینده/منبع: نام سوژه/منبع اصلی حداکثر در ۱ یا ۲ گزینه آورده شود. حداقل ۱ گزینه بدون ذکر نام روی واکنش مستقیم به موضوع تمرکز کند.
+۵. مطلقاً از هیچ هشتگی (#) در متن کامنت‌ها استفاده نکن.
+
 خروجی را به صورت JSON زیر بازگردان:
 { "comments": ["کامنت ۱", "کامنت ۲", "کامنت ۳"] }`;
     } else if (sectionType === 'overlays') {
-        sectionPromptDetails = `وظیفه: دقیقا ۳ متنواره (Overlay) کوتاه و تیترگونه بسیار جذاب روی تصویر (بین ۳ تا ۸ کلمه) بنویس.
-🛑 قانون مهم: مطلقاً از هیچ هشتگی (#) در متنواره‌ها استفاده نکن.
+        sectionPromptDetails = `وظیفه: دقیقا ۳ متنواره (Overlay) تیترگونه و جذاب روی تصویر بساز.
+
+🛑 قوانین بسیار سخت‌گیرانه (STRICT RULES):
+۱. فرمول و طول متن: حداکثر ۷ کلمه (Max 7 words). عبارات کوتاه، جذاب و فوری به سبک خبر فوری (breaking-news style headline phrases).
+۲. تنوع گوینده: حداکثر در ۱ گزینه نام مقام/گوینده ذکر شود.
+۳. پاک‌سازی نقل‌قول: نقل‌قول‌های داخل گیومه باید عین متن اصلی باشند.
+۴. مطلقاً از هیچ هشتگی (#) در متنواره‌ها استفاده نکن.
+
 خروجی را به صورت JSON زیر بازگردان:
 { "overlays": ["متنواره ۱", "متنواره ۲", "متنواره ۳"] }`;
     } else if (sectionType === 'hashtags') {
@@ -4268,6 +4321,8 @@ ${buildFullSystemInstruction(acc)}
 ${langInstruction}
 ${customPrompt ? `[دستور سفارشی تکمیلی کاربر]: "${customPrompt}"` : ''}
 
+${universalHighPrecisionRules}
+
 ${sectionPromptDetails}
 ${isRewrite ? '🛑 توجه: این یک درخواست بازنویسی مجدد است. ایده‌ای جدید و کاملاً متفاوت ارائه بده.' : ''}`;
 }
@@ -4290,13 +4345,13 @@ function applySectionResult(sectionType, parsedResult) {
     }
 
     if (sectionType === 'posts') {
-        renderListWithCopyButtons('outPosts', parsedResult.posts, '۲۵۰ کاراکتر');
+        renderListWithCopyButtons('outPosts', parsedResult.posts, '۲۸۰ کاراکتر');
     } else if (sectionType === 'quotes') {
-        renderListWithCopyButtons('outQuotes', parsedResult.quotes, '۲۰۰ کاراکتر');
+        renderListWithCopyButtons('outQuotes', parsedResult.quotes, '۱۵۰ کاراکتر');
     } else if (sectionType === 'comments') {
-        renderListWithCopyButtons('outComments', parsedResult.comments, '۱۵۰ کاراکتر');
+        renderListWithCopyButtons('outComments', parsedResult.comments, '۱۲۰ کاراکتر');
     } else if (sectionType === 'overlays') {
-        renderListWithCopyButtons('outOverlays', parsedResult.overlays, '۸ کلمه');
+        renderListWithCopyButtons('outOverlays', parsedResult.overlays, '۷ کلمه');
         if (parsedResult.overlays && parsedResult.overlays.length > 0) {
             currentTopOverlayText = parsedResult.overlays[0];
             document.getElementById('customOverlayInput').value = currentTopOverlayText;
